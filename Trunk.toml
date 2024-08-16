@@ -1,0 +1,11 @@
+# A sem-ver version requirement of trunk required for this project
+trunk-version = "*"
+
+[build]
+public_url = "/"
+
+[serve]
+# The address to serve on.
+addresses = ["127.0.0.1"]
+# The port to serve on.
+port = 3000
