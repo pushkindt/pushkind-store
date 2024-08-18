@@ -83,7 +83,7 @@ fn ProductCard(product: Product) -> impl IntoView {
                 <div class="card-body py-0">
                     <h5 class="card-title text-start">{format!("{:.2}", product.price)} "₽"</h5>
                 </div>
-                <div class="card-footer bg-white border-top-0 text-start text-truncate">
+                <div class="card-footer bg-white border-top-0 text-start">
                     {product.name}
                 </div>
             </div>
