@@ -1,5 +1,4 @@
-use crate::models::category::Category;
-use crate::models::product::Products;
+use crate::models::product::{Product, Products};
 use crate::pages::products::ProductCards;
 use leptos::*;
 use leptos_router::*;
@@ -11,7 +10,7 @@ struct SearchPageQuery {
 }
 
 #[component]
-pub fn SearchPage() -> impl IntoView {
+pub fn SearchPage(set_product: WriteSignal<Option<Product>>) -> impl IntoView {
     let query = use_query::<SearchPageQuery>();
 
     let page =
@@ -44,7 +43,7 @@ pub fn SearchPage() -> impl IntoView {
                     <li class="breadcrumb-item active" aria-current="page">{search}</li>
                 </ol>
             </nav>
-            <ProductCards products=products />
+            <ProductCards products=products set_product=set_product/>
         </div>
     }
 }

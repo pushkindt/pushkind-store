@@ -2,7 +2,6 @@ use crate::env;
 use crate::models::category::Category;
 use crate::models::product::Product;
 use crate::pages::category::CategoryPage;
-use crate::pages::product::ProductPage;
 use crate::pages::search::SearchPage;
 use crate::utils::make_backend_url;
 use leptos::*;
@@ -23,7 +22,7 @@ fn Navbar(get_category: ReadSignal<Option<Category>>) -> impl IntoView {
     view! {
         <nav class="navbar navbar-expand-lg bg-body-tertiary px-5">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#" data-bs-toggle="modal" data-bs-target="#productModal">//href=env::APP_BACKEND_URL>
+                <a class="navbar-brand" href=env::APP_BACKEND_URL>
                     <img class="logo" src=make_backend_url("/static/upload/logo1.png") alt="Logo" title="Nadin" />
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -81,12 +80,17 @@ fn Navbar(get_category: ReadSignal<Option<Category>>) -> impl IntoView {
 
 #[component]
 fn ProductModal(get_product: ReadSignal<Option<Product>>) -> impl IntoView {
+    let product = move || match get_product() {
+        None => Product::default(),
+        Some(product) => product,
+    };
+
     view! {
         <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="productModalLabel">"Andersen-Барх кофе в зерне в какао-обсып'Ван. кор. кар' 1кг"</h5>
+                        <h5 class="modal-title" id="productModalLabel">{product().name}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -96,10 +100,10 @@ fn ProductModal(get_product: ReadSignal<Option<Product>>) -> impl IntoView {
                                     <div id="carouselImages" class="carousel slide">
                                         <div class="carousel-inner">
                                             <div class="carousel-item active">
-                                                <img src="https://reports.pushkind.com//static/upload/vendor1/1%D0%9A%D0%9C%D0%94%D0%9E%D0%9100-000001-01.jpg" class="d-block w-100" alt="Product Image" />
+                                                <img src=product().get_image() class="d-block w-100" alt="Product Image" />
                                             </div>
                                             <div class="carousel-item">
-                                                <img src="https://reports.pushkind.com//static/upload/vendor1/1%D0%9A%D0%9C%D0%94%D0%9E%D0%9100-000001-01.jpg" class="d-block w-100" alt="Product Image" />
+                                                <img src=product().get_image() class="d-block w-100" alt="Product Image" />
                                             </div>
                                         </div>
                                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselImages" data-bs-slide="prev">
@@ -126,8 +130,8 @@ fn ProductModal(get_product: ReadSignal<Option<Product>>) -> impl IntoView {
                                         <div class="col">
                                             <div class="input-group">
                                                 <span class="input-group-text">Количество</span>
-                                                <input type="number" class="form-control productQuantity" min="0" step="1" aria-label="Количество" value="" />
-                                                <span class="input-group-text">"шт"</span>
+                                                <input name="quantity" type="number" class="form-control productQuantity" min="0" step="1" aria-label="Количество" value="" />
+                                                <span class="input-group-text">{product().measurement.unwrap_or_default()}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -141,7 +145,7 @@ fn ProductModal(get_product: ReadSignal<Option<Product>>) -> impl IntoView {
                         </div>
                         <div class="row">
                             <strong>"Описание:"</strong>
-                            <pre>"qwer"</pre>
+                            <pre>{product().description}</pre>
                         </div>
                     </div>
                 </div>
@@ -162,7 +166,7 @@ pub fn App() -> impl IntoView {
             <ProductModal get_product=get_product/>
             <Routes>
                 <Route path="/" view=move || view! { <CategoryPage set_category=set_category set_product=set_product /> }/>
-                <Route path="/search" view=move || view! { <SearchPage /> }/>
+                <Route path="/search" view=move || view! { <SearchPage set_product=set_product/> }/>
                 <Route path="/category/:id" view=move || view! { <CategoryPage set_category=set_category set_product=set_product /> } />
                 <Route path="/*" view=|| view! { <h1>404 Not Found</h1> } />
                 // <Route path="/cart" view=|| view! { <CartPage /> } />

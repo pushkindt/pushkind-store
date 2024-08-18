@@ -41,7 +41,7 @@ pub fn CategoryPage(
     let category_name = move || match category.get() {
         None => "".to_string(),
         Some(category) => {
-            set_category.set(category.clone());
+            set_category(category.clone());
             match category {
                 None => "".to_string(),
                 Some(category) => category.name,
@@ -57,7 +57,7 @@ pub fn CategoryPage(
                     <li class="breadcrumb-item active" aria-current="page">{category_name}</li>
                 </ol>
             </nav>
-            <ProductCards products=products />
+            <ProductCards products=products set_product=set_product/>
         </div>
     }
 }

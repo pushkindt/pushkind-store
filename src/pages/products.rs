@@ -1,6 +1,5 @@
-use crate::env;
 use crate::models::product::{Product, Products};
-use crate::utils::{make_backend_url, Paginator};
+use crate::utils::Paginator;
 use leptos::*;
 
 #[component]
@@ -41,7 +40,10 @@ fn ProductPagination(#[prop(into)] products: Signal<Option<Products>>) -> impl I
 }
 
 #[component]
-pub fn ProductCards(#[prop(into)] products: Signal<Option<Products>>) -> impl IntoView {
+pub fn ProductCards(
+    #[prop(into)] products: Signal<Option<Products>>,
+    set_product: WriteSignal<Option<Product>>,
+) -> impl IntoView {
     let products_products = move || match products.get() {
         None => vec![],
         Some(products) => products.products,
@@ -57,7 +59,7 @@ pub fn ProductCards(#[prop(into)] products: Signal<Option<Products>>) -> impl In
                         0 => view! { <div class="col"><div class="spinner-border" role="status"><span class="visually-hidden">Загрузка...</span></div>.</div> }.into_view(),
                         _ => view! {
                             <For each=products_products key=|product| product.id children=move |product| view! {
-                                <ProductCard product=product.clone() />
+                                <ProductCard product=product.clone() set_product=set_product />
                             } />
                         }.into_view(),
                     },
@@ -69,17 +71,21 @@ pub fn ProductCards(#[prop(into)] products: Signal<Option<Products>>) -> impl In
 }
 
 #[component]
-fn ProductCard(product: Product) -> impl IntoView {
-    // let navigate = leptos_router::use_navigate();
+fn ProductCard(product: Product, set_product: WriteSignal<Option<Product>>) -> impl IntoView {
+    let product_id = product.id;
+    let product_image = product.get_image();
+    let product_price = product.price;
+    let product_name = product.name.clone();
+
     view! {
         <div class="col my-2">
-            <div class="card text-center selectable overflow-hidden h-100" data-id=format!("{}", product.id) data-bs-toggle="modal" data-bs-target="#productModal"> //on:click=move |_| navigate(&format!("/product/{}", product.id), Default::default())>
-                <img class="card-img-top" src=make_backend_url(&product.image.unwrap_or(env::APP_DEFAULT_PRODUCT_IMAGE.to_string())) alt="thumbnail" />
+            <div class="card text-center selectable overflow-hidden h-100" data-id=format!("{}", product_id) data-bs-toggle="modal" data-bs-target="#productModal" on:click=move |_| set_product(Some(product.clone()))>
+                <img class="card-img-top" src=product_image alt="thumbnail" />
                 <div class="card-body py-0">
-                    <h5 class="card-title text-start">{format!("{:.2}", product.price)} "₽"</h5>
+                    <h5 class="card-title text-start">{format!("{:.2}", product_price)} "₽"</h5>
                 </div>
                 <div class="card-footer bg-white border-top-0 text-start">
-                    {product.name}
+                    {product_name}
                 </div>
             </div>
         </div>

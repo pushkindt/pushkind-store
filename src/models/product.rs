@@ -1,3 +1,4 @@
+use crate::env;
 use crate::utils::make_backend_url;
 use reqwest;
 use std::collections::HashMap;
@@ -12,7 +13,7 @@ pub struct Products {
     pub products: Vec<Product>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct Product {
     pub id: i32,
     pub vendor: String,
@@ -30,6 +31,14 @@ pub struct Product {
 }
 
 impl Product {
+    pub fn get_image(&self) -> String {
+        let image = match &self.image {
+            Some(image) => image,
+            None => env::APP_DEFAULT_PRODUCT_IMAGE,
+        };
+        make_backend_url(image)
+    }
+
     pub async fn load(id: i32) -> Option<Product> {
         let url = make_backend_url(&format!("api/product/{}", id));
         let response = match reqwest::get(url).await {
