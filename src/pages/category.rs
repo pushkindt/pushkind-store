@@ -1,5 +1,5 @@
 use crate::models::category::Category;
-use crate::models::product::Products;
+use crate::models::product::{Product, Products};
 use crate::pages::products::ProductCards;
 use leptos::*;
 use leptos_router::*;
@@ -14,7 +14,10 @@ struct CategoryPageQuery {
 }
 
 #[component]
-pub fn CategoryPage(set_category: WriteSignal<Option<Category>>) -> impl IntoView {
+pub fn CategoryPage(
+    set_category: WriteSignal<Option<Category>>,
+    set_product: WriteSignal<Option<Product>>,
+) -> impl IntoView {
     let params = use_params::<CategoryPageParams>();
     let query = use_query::<CategoryPageQuery>();
 

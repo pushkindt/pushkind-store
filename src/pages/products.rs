@@ -15,11 +15,6 @@ fn ProductPagination(#[prop(into)] products: Signal<Option<Products>>) -> impl I
         Some(products) => products.page,
     };
 
-    let total_pages = move || match products.get() {
-        None => 1,
-        Some(products) => products.pages,
-    };
-
     view! {
         <nav>
             <ul class="pagination justify-content-center flex-wrap">
@@ -75,10 +70,10 @@ pub fn ProductCards(#[prop(into)] products: Signal<Option<Products>>) -> impl In
 
 #[component]
 fn ProductCard(product: Product) -> impl IntoView {
-    let navigate = leptos_router::use_navigate();
+    // let navigate = leptos_router::use_navigate();
     view! {
         <div class="col my-2">
-            <div class="card text-center selectable overflow-hidden h-100" data-id=format!("{}", product.id) on:click=move |_| navigate(&format!("/product/{}", product.id), Default::default())>
+            <div class="card text-center selectable overflow-hidden h-100" data-id=format!("{}", product.id) data-bs-toggle="modal" data-bs-target="#productModal"> //on:click=move |_| navigate(&format!("/product/{}", product.id), Default::default())>
                 <img class="card-img-top" src=make_backend_url(&product.image.unwrap_or(env::APP_DEFAULT_PRODUCT_IMAGE.to_string())) alt="thumbnail" />
                 <div class="card-body py-0">
                     <h5 class="card-title text-start">{format!("{:.2}", product.price)} "₽"</h5>
