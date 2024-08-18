@@ -5,29 +5,30 @@ use leptos::*;
 use leptos_router::*;
 
 #[derive(Params, PartialEq)]
-struct CategoryPageParams {
-    id: i32,
-}
-#[derive(Params, PartialEq)]
-struct CategoryPageQuery {
-    page: i32,
+struct SearchPageQuery {
+    q: String,
+    page: Option<i32>,
 }
 
 #[component]
-pub fn SearchPage(set_category: WriteSignal<Option<Category>>) -> impl IntoView {
-    let params = use_params::<CategoryPageParams>();
-    let query = use_query::<CategoryPageQuery>();
+pub fn SearchPage() -> impl IntoView {
+    let query = use_query::<SearchPageQuery>();
 
-    let id =
-        move || params.with(|params| params.as_ref().map(move |params| params.id).unwrap_or(0));
+    let page =
+        move || query.with(|query| query.as_ref().map(|query| query.page).unwrap_or(Some(1)));
+    let search = move || {
+        query.with(|query| {
+            query
+                .as_ref()
+                .map(|query| query.q.clone())
+                .unwrap_or("".to_string())
+        })
+    };
 
-    let category = create_resource(id, |value| async move { Category::load(value).await });
-    let page = move || query.with(|query| query.as_ref().map(|query| query.page).unwrap_or(1));
+    let search_page = move || (search(), page());
 
-    let id_page = move || (id(), page());
-
-    let products = create_resource(id_page, |value| async move {
-        Products::load(value.0, value.1).await
+    let products = create_resource(search_page, |value| async move {
+        Products::search(value.0, value.1.unwrap_or(1)).await
     });
 
     let products = move || match products.get() {
@@ -35,23 +36,12 @@ pub fn SearchPage(set_category: WriteSignal<Option<Category>>) -> impl IntoView 
         Some(products) => products,
     };
 
-    let category_name = move || match category.get() {
-        None => "".to_string(),
-        Some(category) => {
-            set_category.set(category.clone());
-            match category {
-                None => "".to_string(),
-                Some(category) => category.name,
-            }
-        }
-    };
-
     view! {
         <div class="container">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="/">Поиск</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">{category_name}</li>
+                    <li class="breadcrumb-item active" aria-current="page">{search}</li>
                 </ol>
             </nav>
             <ProductCards products=products />

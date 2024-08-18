@@ -31,24 +31,37 @@ pub fn Navbar(get_category: ReadSignal<Option<Category>>) -> impl IntoView {
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Категории
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item disabled" aria-disabled="true">{category_name}</a></li>
-                                <li><hr class="dropdown-divider" /></li>
-                                <For each=category_children key=|child| child.0 children=move |child| view! {
-                                    <li><a class="dropdown-item" href=format!("/category/{}", child.0)>{child.1.clone()}</a></li>
-                                } />
-                            </ul>
-                        </li>
-                    </ul>
+                    {
+                        move || match get_category() {
+                            Some(_) => view! {
+                                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            Категории
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item disabled" aria-disabled="true">{category_name}</a></li>
+                                            <li><hr class="dropdown-divider" /></li>
+                                            <For each=category_children key=|child| child.0 children=move |child| view! {
+                                                <li><a class="dropdown-item" href=format!("/category/{}", child.0)>{child.1.clone()}</a></li>
+                                            } />
+                                        </ul>
+                                    </li>
+                                </ul>
+                            }.into_view(),
+                            None => view! {
+                                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                    <li class="nav-item">
+                                        <a class="nav-link" aria-current="page" href="/">Главная</a>
+                                    </li>
+                                </ul>
+                            }.into_view()
+                        }
+                    }
                     <form class="d-flex w-100" role="search" action="/search">
                         <div class="input-group me-2">
-                            <input name="search" class="form-control" type="search" placeholder="Search" aria-label="Search" />
+                            <input name="q" class="form-control" type="search" placeholder="Поиск" aria-label="Search" />
                             <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
                         </div>
                         <a class="text-muted ms-1" href=make_backend_url(env::APP_CART_URL)>
@@ -70,7 +83,7 @@ pub fn App() -> impl IntoView {
             <Navbar get_category=get_category />
             <Routes>
                 <Route path="/" view=move || view! { <CategoryPage set_category=set_category /> }/>
-                <Route path="/search" view=move || view! { <SearchPage set_category=set_category /> }/>
+                <Route path="/search" view=move || view! { <SearchPage /> }/>
                 <Route path="/category/:id" view=move || view! { <CategoryPage set_category=set_category /> } />
                 <Route path="/product/:id" view=|| view! { <ProductPage /> } />
                 <Route path="/*" view=|| view! { <h1>404 Not Found</h1> } />
