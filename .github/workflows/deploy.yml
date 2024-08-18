@@ -16,6 +16,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: Install trunk
+      run: cargo install trunk
     - name: Save environment
       run: |
         echo APP_BACKEND_URL=${{ vars.APP_BACKEND_URL }} > .env
