@@ -36,4 +36,6 @@ jobs:
         known_hosts: ${{ secrets.CICD_KNOWN_HOSTS }}
         if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
     - name: Deploy
-      run: scp dist/* cicd@map.pushkind.com:/var/www/html/
+      run: |
+        ssh cicd@map.pushkind.com "rm -rf /var/www/html/*"
+        scp dist/* cicd@map.pushkind.com:/var/www/html/
