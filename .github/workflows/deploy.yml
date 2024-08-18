@@ -18,9 +18,9 @@ jobs:
     - uses: actions/checkout@v4
     - name: Save environment
       run: |
-        echo ${{ env.APP_BACKEND_URL }} > .env
-        echo ${{ env.APP_CART_URL }} >> .env
-        echo ${{ env.APP_DEFAULT_PRODUCT_IMAGE }} >> .env
+        echo ${{ vars.APP_BACKEND_URL }} > .env
+        echo ${{ vars.APP_CART_URL }} >> .env
+        echo ${{ vars.APP_DEFAULT_PRODUCT_IMAGE }} >> .env
         cat .env
     # - name: Build
     #   run: cargo build --verbose
