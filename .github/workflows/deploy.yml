@@ -21,8 +21,7 @@ jobs:
         echo APP_BACKEND_URL=${{ vars.APP_BACKEND_URL }} > .env
         echo APP_CART_URL=${{ vars.APP_CART_URL }} >> .env
         echo APP_DEFAULT_PRODUCT_IMAGE=${{ vars.APP_DEFAULT_PRODUCT_IMAGE }} >> .env
-        cat .env
-    # - name: Build
-    #   run: cargo build --verbose
+    - name: Build
+      run: trunk build --release
     # - name: Run tests
     #   run: cargo test --verbose
