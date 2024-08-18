@@ -79,7 +79,7 @@ fn ProductCard(product: Product, set_product: WriteSignal<Option<Product>>) -> i
 
     view! {
         <div class="col my-2">
-            <div class="card text-center selectable overflow-hidden h-100" data-id=format!("{}", product_id) data-bs-toggle="modal" data-bs-target="#productModal" on:click=move |_| set_product(Some(product.clone()))>
+            <div class="card text-center selectable overflow-hidden h-100" data-id=format!("{}", product_id) data-bs-toggle="modal" data-bs-target="#productModal" on:click=move |_| {set_product(Some(product.clone()))}>
                 <img class="card-img-top" src=product_image alt="thumbnail" />
                 <div class="card-body py-0">
                     <h5 class="card-title text-start">{format!("{:.2}", product_price)} "₽"</h5>
