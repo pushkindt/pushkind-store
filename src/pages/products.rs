@@ -1,6 +1,6 @@
 use crate::env;
 use crate::models::product::{Product, Products};
-use crate::utils::Paginator;
+use crate::utils::{make_backend_url, Paginator};
 use leptos::*;
 
 #[component]
@@ -40,25 +40,6 @@ fn ProductPagination(#[prop(into)] products: Signal<Option<Products>>) -> impl I
                         }
                     ).collect::<Vec<_>>()
                 }
-
-
-
-
-                // <For each=move || paginator().iter_pages(2, 2, 4, 2) key=|page| page children=move |page| view! {
-                //     // match page {
-                //     //     None >= view! { <li class="page-item disabled"><a class="page-link" href="#">...</a></li> }.into_view(),
-                //     //     Some(page) if page == current_page() => view! {
-                //     //         <li class="page-item active">
-                //     //             <a class="page-link" href=format!("?page={}", page)>{page.to_string()}</a>
-                //     //         </li>
-                //     //     }.into_view(),
-                //     //     Some(page) => view! {
-                //     //         <li class="page-item">
-                //     //             <a class="page-link" href=format!("?page={}", page)>{page.to_string()}</a>
-                //     //         </li>
-                //     //     }.into_view(),
-                //     // }
-                // }/>
             </ul>
         </nav>
     }
@@ -98,7 +79,7 @@ fn ProductCard(product: Product) -> impl IntoView {
     view! {
         <div class="col my-2">
             <div class="card text-center selectable overflow-hidden h-100" data-id=format!("{}", product.id) on:click=move |_| navigate(&format!("/product/{}", product.id), Default::default())>
-                <img class="card-img-top" src=format!("{}", product.image.unwrap_or(env::APP_DEFAULT_PRODUCT_IMAGE.to_string())) alt="thumbnail" />
+                <img class="card-img-top" src=make_backend_url(&product.image.unwrap_or(env::APP_DEFAULT_PRODUCT_IMAGE.to_string())) alt="thumbnail" />
                 <div class="card-body py-0">
                     <h5 class="card-title text-start">{format!("{:.2}", product.price)} "₽"</h5>
                 </div>

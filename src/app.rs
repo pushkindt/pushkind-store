@@ -51,7 +51,7 @@ pub fn Navbar(get_category: ReadSignal<Option<Category>>) -> impl IntoView {
                             <input name="search" class="form-control" type="search" placeholder="Search" aria-label="Search" />
                             <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
                         </div>
-                        <a class="text-muted ms-1" href=env::APP_CART_URL>
+                        <a class="text-muted ms-1" href=make_backend_url(env::APP_CART_URL)>
                             <i class="bi bi-cart fs-4"></i>
                         </a>
                     </form>
