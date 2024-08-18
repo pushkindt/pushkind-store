@@ -1,12 +1,11 @@
 use crate::env;
 use crate::models::category::Category;
-use crate::models::product::{self, Product};
+use crate::models::product::Product;
 use crate::pages::category::CategoryPage;
 use crate::pages::search::SearchPage;
 use crate::utils::make_backend_url;
 use leptos::*;
 use leptos_router::*;
-use tracing::info;
 
 #[component]
 fn Navbar(get_category: ReadSignal<Option<Category>>) -> impl IntoView {
