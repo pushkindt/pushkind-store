@@ -22,10 +22,25 @@ pub struct Product {
     pub prices: Option<HashMap<String, f32>>,
     pub image: Option<String>,
     pub measurement: Option<String>,
+    pub cat_id: i32,
     pub category: String,
     pub description: Option<String>,
     pub options: Option<HashMap<String, String>>,
     pub tags: Option<Vec<String>>,
+}
+
+impl Product {
+    pub async fn load(id: i32) -> Option<Product> {
+        let url = make_backend_url(&format!("api/product/{}", id));
+        let response = match reqwest::get(url).await {
+            Ok(response) => response,
+            Err(_) => return None,
+        };
+        match response.json().await {
+            Ok(product) => product,
+            Err(_) => None,
+        }
+    }
 }
 
 impl Products {
