@@ -14,10 +14,10 @@ struct CategoryPageQuery {
 }
 
 #[component]
-pub fn CategoryPage(
-    set_category: WriteSignal<Option<Category>>,
-    set_product: WriteSignal<Option<Product>>,
-) -> impl IntoView {
+pub fn CategoryPage() -> impl IntoView {
+    let set_category =
+        use_context::<WriteSignal<Option<Category>>>().expect("Set category signal not found");
+
     let params = use_params::<CategoryPageParams>();
     let query = use_query::<CategoryPageQuery>();
 
@@ -57,7 +57,7 @@ pub fn CategoryPage(
                     <li class="breadcrumb-item active" aria-current="page">{category_name}</li>
                 </ol>
             </nav>
-            <ProductCards products=products set_product=set_product/>
+            <ProductCards products=products />
         </div>
     }
 }

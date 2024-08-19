@@ -3,7 +3,10 @@ use crate::utils::Paginator;
 use leptos::*;
 
 #[component]
-pub fn ProductModal(get_product: ReadSignal<Option<Product>>) -> impl IntoView {
+pub fn ProductModal() -> impl IntoView {
+    let get_product =
+        use_context::<ReadSignal<Option<Product>>>().expect("Get product signal not found");
+
     let product_name = move || match get_product() {
         None => "".to_string(),
         Some(product) => product.name,
@@ -125,10 +128,7 @@ fn ProductPagination(#[prop(into)] products: Signal<Option<Products>>) -> impl I
 }
 
 #[component]
-pub fn ProductCards(
-    #[prop(into)] products: Signal<Option<Products>>,
-    set_product: WriteSignal<Option<Product>>,
-) -> impl IntoView {
+pub fn ProductCards(#[prop(into)] products: Signal<Option<Products>>) -> impl IntoView {
     let products_products = move || match products.get() {
         None => vec![],
         Some(products) => products.products,
@@ -144,7 +144,7 @@ pub fn ProductCards(
                         0 => view! { <div class="col"><div class="spinner-border" role="status"><span class="visually-hidden">Загрузка...</span></div>.</div> }.into_view(),
                         _ => view! {
                             <For each=products_products key=|product| product.id children=move |product| view! {
-                                <ProductCard product=product.clone() set_product=set_product />
+                                <ProductCard product=product.clone() />
                             } />
                         }.into_view(),
                     },
@@ -156,7 +156,10 @@ pub fn ProductCards(
 }
 
 #[component]
-fn ProductCard(product: Product, set_product: WriteSignal<Option<Product>>) -> impl IntoView {
+fn ProductCard(product: Product) -> impl IntoView {
+    let set_product =
+        use_context::<WriteSignal<Option<Product>>>().expect("Set product signal not found");
+
     let product_id = product.id;
     let product_image = product.get_image();
     let product_price = product.price;

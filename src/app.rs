@@ -18,16 +18,21 @@ pub fn App() -> impl IntoView {
     let (get_cart, set_cart, reset_cart) =
         use_session_storage::<ShoppingCart, JsonSerdeCodec>("cart");
 
+    provide_context(get_category);
+    provide_context(set_category);
+    provide_context(get_product);
+    provide_context(set_product);
     provide_context(get_cart);
+    provide_context(set_cart);
 
     view! {
         <Router>
-            <Navbar get_category=get_category />
-            <ProductModal get_product=get_product/>
+            <Navbar />
+            <ProductModal />
             <Routes>
-                <Route path="/" view=move || view! { <CategoryPage set_category=set_category set_product=set_product /> }/>
-                <Route path="/search" view=move || view! { <SearchPage set_product=set_product/> }/>
-                <Route path="/category/:id" view=move || view! { <CategoryPage set_category=set_category set_product=set_product /> } />
+                <Route path="/" view=move || view! { <CategoryPage /> }/>
+                <Route path="/search" view=move || view! { <SearchPage /> }/>
+                <Route path="/category/:id" view=move || view! { <CategoryPage /> } />
                 <Route path="/*" view=|| view! { <h1>404 Not Found</h1> } />
                 // <Route path="/cart" view=|| view! { <CartPage /> } />
             </Routes>

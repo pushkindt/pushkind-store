@@ -10,7 +10,7 @@ struct SearchPageQuery {
 }
 
 #[component]
-pub fn SearchPage(set_product: WriteSignal<Option<Product>>) -> impl IntoView {
+pub fn SearchPage() -> impl IntoView {
     let query = use_query::<SearchPageQuery>();
 
     let page =
@@ -43,7 +43,7 @@ pub fn SearchPage(set_product: WriteSignal<Option<Product>>) -> impl IntoView {
                     <li class="breadcrumb-item active" aria-current="page">{search}</li>
                 </ol>
             </nav>
-            <ProductCards products=products set_product=set_product/>
+            <ProductCards products=products />
         </div>
     }
 }

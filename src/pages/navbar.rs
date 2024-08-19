@@ -5,7 +5,10 @@ use crate::utils::make_backend_url;
 use leptos::*;
 
 #[component]
-pub fn Navbar(get_category: ReadSignal<Option<Category>>) -> impl IntoView {
+pub fn Navbar() -> impl IntoView {
+    let get_category =
+        use_context::<ReadSignal<Option<Category>>>().expect("Get category signal not found");
+
     let category_children = move || match get_category() {
         None => vec![],
         Some(category) => category.children,
@@ -16,7 +19,8 @@ pub fn Navbar(get_category: ReadSignal<Option<Category>>) -> impl IntoView {
         Some(category) => category.name,
     };
 
-    let get_cart = use_context::<Signal<ShoppingCart>>().expect("Shopping cart not found");
+    let get_cart =
+        use_context::<Signal<ShoppingCart>>().expect("Get shopping cart signal not found");
 
     let cart_count = move || get_cart().items.len();
 
