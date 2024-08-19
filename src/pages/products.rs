@@ -3,6 +3,91 @@ use crate::utils::Paginator;
 use leptos::*;
 
 #[component]
+pub fn ProductModal(get_product: ReadSignal<Option<Product>>) -> impl IntoView {
+    let product_name = move || match get_product() {
+        None => "".to_string(),
+        Some(product) => product.name,
+    };
+    let product_image = move || match get_product() {
+        None => "".to_string(),
+        Some(product) => product.get_image(),
+    };
+    let product_description = move || match get_product() {
+        None => "".to_string(),
+        Some(product) => product.description.unwrap_or_default(),
+    };
+    let product_measurement = move || match get_product() {
+        None => "".to_string(),
+        Some(product) => product.measurement.unwrap_or_default(),
+    };
+
+    view! {
+        <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="productModalLabel">{product_name}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <div id="carouselImages" class="carousel slide">
+                                        <div class="carousel-inner">
+                                            <div class="carousel-item active">
+                                                <img src=product_image class="d-block w-100" alt="Product Image" />
+                                            </div>
+                                            <div class="carousel-item">
+                                                <img src=product_image class="d-block w-100" alt="Product Image" />
+                                            </div>
+                                        </div>
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselImages" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Previous</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#carouselImages" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Next</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-sm">
+                                    <div class="row">
+                                        <div class="col">
+                                            <textarea class="form-control productText" rows="3" placeholder="Комментарий" id="descriptionModalProductText">
+                                            </textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row my-1">
+                                        <div class="col">
+                                            <div class="input-group">
+                                                <span class="input-group-text">Количество</span>
+                                                <input name="quantity" type="number" class="form-control productQuantity" min="0" step="1" aria-label="Количество" value="" />
+                                                <span class="input-group-text">{product_measurement}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-center my-1">
+                                        <div class="col-auto">
+                                            <button type="button" class="btn btn-primary">"Сохранить"</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <strong>"Описание:"</strong>
+                            <pre>{product_description}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+#[component]
 fn ProductPagination(#[prop(into)] products: Signal<Option<Products>>) -> impl IntoView {
     let paginator = move || match products.get() {
         None => Paginator::new(1, 1),

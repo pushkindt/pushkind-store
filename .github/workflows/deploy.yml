@@ -38,6 +38,5 @@ jobs:
         if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
     - name: Deploy
       run: |
-        ssh cicd@map.pushkind.com "rm -rf /var/www/html/*"
         scp dist/* cicd@map.pushkind.com:/var/www/html/
         scp public/* cicd@map.pushkind.com:/var/www/html/
