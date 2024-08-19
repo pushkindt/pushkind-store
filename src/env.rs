@@ -5,3 +5,4 @@
 pub const APP_BACKEND_URL: &'static str = "https://reports.pushkind.com/";
 pub const APP_DEFAULT_PRODUCT_IMAGE: &'static str = "/static/placeholder.png";
 pub const APP_CART_URL: &'static str = "/shop/order";
+pub const APP_SIGNIN_URL: &'static str = "/auth/login";

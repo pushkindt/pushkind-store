@@ -66,10 +66,13 @@ fn Navbar(get_category: ReadSignal<Option<Category>>) -> impl IntoView {
                         </div>
                         <a class="text-muted ms-1" href=make_backend_url(env::APP_CART_URL)>
                             <i class="bi bi-cart fs-4"></i>
-                            <span class="position-absolute bottom-0 start-10 translate-middle badge rounded-pill bg-danger">
-                                0
-                                <span class="visually-hidden">items in cart</span>
-                            </span>
+                            // <span class="position-absolute bottom-0 start-10 translate-middle badge rounded-pill bg-danger">
+                            //     0
+                            //     <span class="visually-hidden">items in cart</span>
+                            // </span>
+                        </a>
+                        <a class="text-muted ms-3" href=make_backend_url(env::APP_SIGNIN_URL)>
+                            <i class="bi bi-person-circle fs-4"></i>
                         </a>
                     </form>
                 </div>
