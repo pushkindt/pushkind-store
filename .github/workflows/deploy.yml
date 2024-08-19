@@ -26,6 +26,7 @@ jobs:
         echo APP_BACKEND_URL=${{ vars.APP_BACKEND_URL }} > .env
         echo APP_CART_URL=${{ vars.APP_CART_URL }} >> .env
         echo APP_DEFAULT_PRODUCT_IMAGE=${{ vars.APP_DEFAULT_PRODUCT_IMAGE }} >> .env
+        echo APP_SIGNIN_URL=${{ vars.APP_SIGNIN_URL }} >> .env
     - name: Build
       run: trunk build --release
     - name: Install SSH Key
