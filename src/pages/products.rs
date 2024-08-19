@@ -1,5 +1,5 @@
 use crate::models::product::{Product, Products};
-use crate::models::shopping_cart::ShoppingCart;
+use crate::models::shopping_cart::{CartItem, ShoppingCart};
 use crate::utils::Paginator;
 use leptos::*;
 
@@ -32,7 +32,17 @@ pub fn ProductModal() -> impl IntoView {
     };
     let product_quantity = move || match get_product() {
         None => "".to_string(),
-        Some(product) => get_cart().items.get(&product.id).unwrap_or(&0).to_string(),
+        Some(product) => match get_cart().items.get(&product.id) {
+            Some(item) => item.quantity.to_string(),
+            None => "".to_string(),
+        },
+    };
+    let product_comment = move || match get_product() {
+        None => "".to_string(),
+        Some(product) => match get_cart().items.get(&product.id) {
+            Some(item) => item.comment.clone().unwrap_or_default(),
+            None => "".to_string(),
+        },
     };
 
     let quantity_element: NodeRef<html::Input> = create_node_ref();
@@ -51,7 +61,12 @@ pub fn ProductModal() -> impl IntoView {
                 .value();
             set_cart.update(|cart| {
                 // cart.add_item(product, quantity.parse().unwrap(), comment);
-                cart.items.insert(product.id, quantity.parse().unwrap());
+                let item = CartItem {
+                    product: product.clone(),
+                    quantity: quantity.parse().unwrap(),
+                    comment: Some(comment),
+                };
+                cart.items.insert(product.id, item);
             });
         }
     };
@@ -91,7 +106,7 @@ pub fn ProductModal() -> impl IntoView {
                                     <form on:submit=on_submit>
                                         <div class="row">
                                             <div class="col">
-                                                <textarea node_ref=comment_element name="comment" class="form-control productText" rows="3" placeholder="Комментарий" id="descriptionModalProductText">
+                                                <textarea prop:value=product_comment node_ref=comment_element name="comment" class="form-control productText" rows="3" placeholder="Комментарий" id="descriptionModalProductText">
                                                 </textarea>
                                             </div>
                                         </div>

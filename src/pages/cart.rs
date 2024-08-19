@@ -1,3 +1,5 @@
+use crate::env;
+use crate::utils::make_backend_url;
 use leptos::*;
 
 #[component]
@@ -15,6 +17,13 @@ pub fn CartModal() -> impl IntoView {
                             <div class="row">
                                 <div class="col">
                                     <div class="alert alert-danger">TODO!</div>
+                                </div>
+                                <div class="col">
+                                    <form method="POST" action=make_backend_url(env::APP_CART_URL)>
+                                        <button type="submit" class="btn btn-primary">
+                                            "Заказать"
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
