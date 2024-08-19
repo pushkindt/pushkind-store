@@ -69,7 +69,7 @@ pub fn Navbar() -> impl IntoView {
                             <input name="q" class="form-control" type="search" placeholder="Поиск" aria-label="Search" />
                             <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
                         </div>
-                        <a class="text-muted ms-1" href=make_backend_url(env::APP_CART_URL)>
+                        <a class="text-muted ms-1" href="#" data-bs-toggle="modal" data-bs-target="#cartModal">
                             <i class="bi bi-cart fs-4"></i>
                             <span class="position-absolute translate-middle badge rounded-pill bg-danger">
                                 {cart_count}

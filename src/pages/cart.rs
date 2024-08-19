@@ -1,21 +1,26 @@
 use leptos::*;
 
 #[component]
-pub fn CartPage() -> impl IntoView {
-    // Mock cart data
-    let cart_items = vec!["Product 1", "Product 2"];
-
+pub fn CartModal() -> impl IntoView {
     view! {
-        <div>
-            <h1>"Shopping Cart"</h1>
-            <ul>
-                {cart_items.iter().map(move |item| view! {
-                    <li>{*item}</li>
-                }).collect::<Vec<_>>()}
-            </ul>
-            <button on:click=move |_| {
-                // Place order logic
-            }>"Place Order"</button>
+        <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="productModalLabel">"Корзина"</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="alert alert-danger">TODO!</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     }
 }

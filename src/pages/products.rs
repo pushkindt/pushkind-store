@@ -1,4 +1,5 @@
 use crate::models::product::{Product, Products};
+use crate::models::shopping_cart::ShoppingCart;
 use crate::utils::Paginator;
 use leptos::*;
 
@@ -6,6 +7,12 @@ use leptos::*;
 pub fn ProductModal() -> impl IntoView {
     let get_product =
         use_context::<ReadSignal<Option<Product>>>().expect("Get product signal not found");
+
+    let get_cart =
+        use_context::<Signal<ShoppingCart>>().expect("Get shopping cart signal not found");
+
+    let set_cart =
+        use_context::<WriteSignal<ShoppingCart>>().expect("Set shopping cart signal not found");
 
     let product_name = move || match get_product() {
         None => "".to_string(),
@@ -22,6 +29,31 @@ pub fn ProductModal() -> impl IntoView {
     let product_measurement = move || match get_product() {
         None => "".to_string(),
         Some(product) => product.measurement.unwrap_or_default(),
+    };
+    let product_quantity = move || match get_product() {
+        None => "".to_string(),
+        Some(product) => get_cart().items.get(&product.id).unwrap_or(&0).to_string(),
+    };
+
+    let quantity_element: NodeRef<html::Input> = create_node_ref();
+    let comment_element: NodeRef<html::Textarea> = create_node_ref();
+
+    let on_submit = move |ev: leptos::ev::SubmitEvent| {
+        // stop the page from reloading!
+        ev.prevent_default();
+
+        if let Some(product) = get_product() {
+            let quantity = quantity_element()
+                .expect("<input> should be mounted")
+                .value();
+            let comment = comment_element()
+                .expect("<textarea> should be mounted")
+                .value();
+            set_cart.update(|cart| {
+                // cart.add_item(product, quantity.parse().unwrap(), comment);
+                cart.items.insert(product.id, quantity.parse().unwrap());
+            });
+        }
     };
 
     view! {
@@ -56,26 +88,28 @@ pub fn ProductModal() -> impl IntoView {
                                     </div>
                                 </div>
                                 <div class="col-sm">
-                                    <div class="row">
-                                        <div class="col">
-                                            <textarea class="form-control productText" rows="3" placeholder="Комментарий" id="descriptionModalProductText">
-                                            </textarea>
-                                        </div>
-                                    </div>
-                                    <div class="row my-1">
-                                        <div class="col">
-                                            <div class="input-group">
-                                                <span class="input-group-text">Количество</span>
-                                                <input name="quantity" type="number" class="form-control productQuantity" min="0" step="1" aria-label="Количество" value="" />
-                                                <span class="input-group-text">{product_measurement}</span>
+                                    <form on:submit=on_submit>
+                                        <div class="row">
+                                            <div class="col">
+                                                <textarea node_ref=comment_element name="comment" class="form-control productText" rows="3" placeholder="Комментарий" id="descriptionModalProductText">
+                                                </textarea>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row justify-content-center my-1">
-                                        <div class="col-auto">
-                                            <button type="button" class="btn btn-primary">"Сохранить"</button>
+                                        <div class="row my-1">
+                                            <div class="col">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Количество</span>
+                                                    <input node_ref=quantity_element name="quantity" type="number" class="form-control productQuantity" min="0" step="1" aria-label="Количество" prop:value=product_quantity />
+                                                    <span class="input-group-text">{product_measurement}</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
+                                        <div class="row justify-content-center my-1">
+                                            <div class="col-auto">
+                                                <button data-bs-dismiss="modal" type="submit" class="btn btn-primary" on:click=move |_| {}>"Сохранить"</button>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
