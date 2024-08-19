@@ -1,5 +1,6 @@
 use crate::env;
 use crate::models::category::Category;
+use crate::models::shopping_cart::ShoppingCart;
 use crate::utils::make_backend_url;
 use leptos::*;
 
@@ -14,6 +15,10 @@ pub fn Navbar(get_category: ReadSignal<Option<Category>>) -> impl IntoView {
         None => "".to_string(),
         Some(category) => category.name,
     };
+
+    let get_cart = use_context::<Signal<ShoppingCart>>().expect("Shopping cart not found");
+
+    let cart_count = move || get_cart().items.len();
 
     view! {
         <nav class="navbar navbar-expand-lg bg-body-tertiary px-5">
@@ -62,10 +67,10 @@ pub fn Navbar(get_category: ReadSignal<Option<Category>>) -> impl IntoView {
                         </div>
                         <a class="text-muted ms-1" href=make_backend_url(env::APP_CART_URL)>
                             <i class="bi bi-cart fs-4"></i>
-                            // <span class="position-absolute bottom-0 start-10 translate-middle badge rounded-pill bg-danger">
-                            //     0
-                            //     <span class="visually-hidden">items in cart</span>
-                            // </span>
+                            <span class="position-absolute translate-middle badge rounded-pill bg-danger">
+                                {cart_count}
+                                <span class="visually-hidden">items in cart</span>
+                            </span>
                         </a>
                         <a class="text-muted ms-3" href=make_backend_url(env::APP_SIGNIN_URL)>
                             <i class="bi bi-person-circle fs-4"></i>
