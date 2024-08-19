@@ -1,19 +1,9 @@
 use crate::env;
 use std::iter;
-// use web_sys::Storage;
 
 pub fn make_backend_url(relative: &str) -> String {
     format!("{}{}", env::APP_BACKEND_URL, relative)
 }
-
-// #[inline]
-// pub fn local_storage() -> Storage {
-//     web_sys::window()
-//         .expect("Can't access to the window")
-//         .local_storage()
-//         .expect("Can't access to local storage")
-//         .expect("Can't access to local storage")
-// }
 
 pub struct Paginator {
     pages: usize,
