@@ -224,21 +224,23 @@ pub fn ProductCards(#[prop(into)] products: Signal<Option<Products>>) -> impl In
 
     view! {
         <ProductPagination products=products />
-        <div class="row row-cols-1 row-cols-lg-6 row-cols-md-4 row-cols-sm-2">
-            {
-                move || match products.get() {
-                    None => view! { <div class="col"><div class="spinner-border" role="status"><span class="visually-hidden">Загрузка...</span></div></div> }.into_view(),
-                    Some(products) => match products.total {
-                        0 => view! { <div class="col"><div class="spinner-border" role="status"><span class="visually-hidden">Загрузка...</span></div>.</div> }.into_view(),
-                        _ => view! {
-                            <For each=products_products key=|product| product.id children=move |product| view! {
-                                <ProductCard product=product.clone() />
-                            } />
-                        }.into_view(),
-                    },
-                }
+
+        {
+            move || match products.get() {
+                None => view! { <div class="row"><div class="col"><div class="spinner-border" role="status"><span class="visually-hidden">Загрузка...</span></div></div></div> }.into_view(),
+                Some(products) => match products.total {
+                    0 => view! { <div class="row"><div class="col"><div class="alert alert-primary">"Ничего не найдено"</div></div></div> }.into_view(),
+                    _ => view! {
+                        <div class="row row-cols-1 row-cols-lg-6 row-cols-md-4 row-cols-sm-2">
+                        <For each=products_products key=|product| product.id children=move |product| view! {
+                            <ProductCard product=product.clone() />
+                        } />
+                        </div>
+                    }.into_view(),
+                },
             }
-        </div>
+        }
+
         <ProductPagination products=products />
     }
 }

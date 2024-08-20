@@ -6,7 +6,7 @@ use leptos_router::*;
 #[derive(Params, PartialEq)]
 struct SearchPageQuery {
     q: String,
-    page: Option<i32>,
+    page: Option<u32>,
 }
 
 #[component]

@@ -64,15 +64,20 @@ impl Products {
         }
     }
 
-    pub async fn load(cat_id: i32, page: i32) -> Option<Products> {
-        Products::load_from_url(make_backend_url(&format!(
-            "api/category/{}/products?page={}",
-            cat_id, page
-        )))
-        .await
+    pub async fn load(cat_id: u32, page: u32, tag: Option<String>) -> Option<Products> {
+        let url = if let Some(tag) = tag {
+            make_backend_url(&format!(
+                "api/category/{}/products?page={}&tag={}",
+                cat_id, page, tag
+            ))
+        } else {
+            make_backend_url(&format!("api/category/{}/products?page={}", cat_id, page))
+        };
+
+        Products::load_from_url(url).await
     }
 
-    pub async fn search(key: String, page: i32) -> Option<Products> {
+    pub async fn search(key: String, page: u32) -> Option<Products> {
         Products::load_from_url(make_backend_url(&format!(
             "api/products/search?q={}&page={}",
             key, page

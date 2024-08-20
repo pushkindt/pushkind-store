@@ -33,6 +33,7 @@ pub fn App() -> impl IntoView {
                 <Route path="/" view=move || view! { <CategoryPage /> }/>
                 <Route path="/search" view=move || view! { <SearchPage /> }/>
                 <Route path="/category/:id" view=move || view! { <CategoryPage /> } />
+                <Route path="/category/:id/tag/:tag" view=move || view! { <CategoryPage /> } />
                 <Route path="/*" view=|| view! { <h1>404 Not Found</h1> } />
                 // <Route path="/cart" view=|| view! { <CartPage /> } />
             </Routes>

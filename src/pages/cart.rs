@@ -45,7 +45,7 @@ pub fn CartModal() -> impl IntoView {
                             <form method="POST" action=make_backend_url(env::APP_CART_URL)>
                                 <div class="row my-1">
                                     <div class="col">
-                                        <textarea name="comment" class="form-control" rows="3" placeholder="Комментарий">
+                                        <textarea name="comment" class="form-control" rows="3" placeholder="Комментарий к заказу">
                                         </textarea>
                                     </div>
                                 </div>

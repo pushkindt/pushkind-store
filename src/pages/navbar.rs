@@ -1,6 +1,7 @@
 use crate::env;
 use crate::models::category::Category;
 use crate::models::shopping_cart::ShoppingCart;
+use crate::models::tag::load_tags;
 use crate::utils::make_backend_url;
 use leptos::*;
 
@@ -8,6 +9,11 @@ use leptos::*;
 pub fn Navbar() -> impl IntoView {
     let get_category =
         use_context::<ReadSignal<Option<Category>>>().expect("Get category signal not found");
+
+    let category_id = move || match get_category() {
+        None => 0,
+        Some(category) => category.id,
+    };
 
     let category_children = move || match get_category() {
         None => vec![],
@@ -23,6 +29,15 @@ pub fn Navbar() -> impl IntoView {
         use_context::<Signal<ShoppingCart>>().expect("Get shopping cart signal not found");
 
     let cart_count = move || get_cart().items.len();
+
+    let tags = create_resource(|| (), |_| async move { load_tags().await });
+    let tags = move || match tags.get() {
+        None => vec![],
+        Some(tags) => match tags {
+            None => vec![],
+            Some(tags) => tags,
+        },
+    };
 
     view! {
         <nav class="navbar navbar-expand-lg bg-body-tertiary px-5">
@@ -83,5 +98,17 @@ pub fn Navbar() -> impl IntoView {
                 </div>
             </div>
         </nav>
+        <div class="row justify-content-center">
+            <div class="col-auto">
+                {move || {
+                    tags().into_iter().map(|tag| {
+                        view! {
+                            <a class="badge text-bg-secondary me-1 text-decoration-none" href={format!("/category/{}/tag/{}", category_id(), tag)}>{tag}</a>
+                        }
+                    }).collect_view()
+                }}
+                <a class="badge text-bg-secondary me-1 text-decoration-none" href="/">"все"</a>
+            </div>
+        </div>
     }
 }

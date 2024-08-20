@@ -10,7 +10,7 @@ pub struct Category {
 }
 
 impl Category {
-    pub async fn load(root: i32) -> Option<Category> {
+    pub async fn load(root: u32) -> Option<Category> {
         let url = make_backend_url(&format!("api/category/{}", root));
         let response = match reqwest::get(url).await {
             Ok(response) => response,
