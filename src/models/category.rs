@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Category {
-    pub id: i32,
+    pub id: u32,
     pub name: String,
     pub children: Vec<(i32, String)>,
 }

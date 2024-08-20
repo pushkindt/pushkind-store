@@ -30,6 +30,14 @@ pub fn ProductModal() -> impl IntoView {
         None => "".to_string(),
         Some(product) => product.measurement.unwrap_or_default(),
     };
+    let product_price = move || match get_product() {
+        None => "0.00".to_string(),
+        Some(product) => format!("{:.2}", product.price),
+    };
+    let product_sku = move || match get_product() {
+        None => "".to_string(),
+        Some(product) => product.sku.clone(),
+    };
     let product_quantity = move || match get_product() {
         None => "".to_string(),
         Some(product) => match get_cart().items.get(&product.id) {
@@ -61,9 +69,14 @@ pub fn ProductModal() -> impl IntoView {
                 .value();
             set_cart.update(|cart| {
                 // cart.add_item(product, quantity.parse().unwrap(), comment);
+                let quantity: u32 = quantity.parse().unwrap_or(0);
+                if quantity == 0 {
+                    cart.items.remove(&product.id);
+                    return;
+                }
                 let item = CartItem {
                     product: product.clone(),
-                    quantity: quantity.parse().unwrap(),
+                    quantity: quantity,
                     comment: Some(comment),
                 };
                 cart.items.insert(product.id, item);
@@ -104,9 +117,25 @@ pub fn ProductModal() -> impl IntoView {
                                 </div>
                                 <div class="col-sm">
                                     <form on:submit=on_submit>
-                                        <div class="row">
+                                        <div class="row my-1">
+                                            <div class="col-3 fw-bold">
+                                                "Артикул: "
+                                            </div>
                                             <div class="col">
-                                                <textarea prop:value=product_comment node_ref=comment_element name="comment" class="form-control productText" rows="3" placeholder="Комментарий" id="descriptionModalProductText">
+                                                {product_sku}
+                                            </div>
+                                        </div>
+                                        <div class="row my-1">
+                                            <div class="col-3 fw-bold">
+                                                "Цена: "
+                                            </div>
+                                            <div class="col">
+                                                {product_price}"₽"
+                                            </div>
+                                        </div>
+                                        <div class="row my-1">
+                                            <div class="col">
+                                                <textarea prop:value=product_comment node_ref=comment_element name="comment" class="form-control" rows="3" placeholder="Комментарий">
                                                 </textarea>
                                             </div>
                                         </div>
@@ -121,7 +150,7 @@ pub fn ProductModal() -> impl IntoView {
                                         </div>
                                         <div class="row justify-content-center my-1">
                                             <div class="col-auto">
-                                                <button data-bs-dismiss="modal" type="submit" class="btn btn-primary" on:click=move |_| {}>"Сохранить"</button>
+                                                <button data-bs-dismiss="modal" type="submit" class="btn btn-primary">"Сохранить"</button>
                                             </div>
                                         </div>
                                     </form>
@@ -209,17 +238,16 @@ fn ProductCard(product: Product) -> impl IntoView {
     let set_product =
         use_context::<WriteSignal<Option<Product>>>().expect("Set product signal not found");
 
-    let product_id = product.id;
     let product_image = product.get_image();
     let product_price = product.price;
     let product_name = product.name.clone();
 
     view! {
         <div class="col my-2">
-            <div class="card text-center selectable overflow-hidden h-100" data-id=format!("{}", product_id) data-bs-toggle="modal" data-bs-target="#productModal" on:click=move |_| {set_product(Some(product.clone()))}>
+            <div class="card text-center selectable overflow-hidden h-100" data-bs-toggle="modal" data-bs-target="#productModal" on:click=move |_| {set_product(Some(product.clone()))}>
                 <img class="card-img-top" src=product_image alt="thumbnail" />
                 <div class="card-body py-0">
-                    <h5 class="card-title text-start">{format!("{:.2}", product_price)} "₽"</h5>
+                    <h5 class="card-title text-start">{format!("{:.2}", product_price)}"₽"</h5>
                 </div>
                 <div class="card-footer bg-white border-top-0 text-start">
                     {product_name}

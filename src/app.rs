@@ -15,8 +15,7 @@ use leptos_use::storage::use_session_storage;
 pub fn App() -> impl IntoView {
     let (get_category, set_category) = create_signal(None::<Category>);
     let (get_product, set_product) = create_signal(None::<Product>);
-    let (get_cart, set_cart, reset_cart) =
-        use_session_storage::<ShoppingCart, JsonSerdeCodec>("cart");
+    let (get_cart, set_cart, _) = use_session_storage::<ShoppingCart, JsonSerdeCodec>("cart");
 
     provide_context(get_category);
     provide_context(set_category);

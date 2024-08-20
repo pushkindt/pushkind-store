@@ -11,5 +11,5 @@ pub struct CartItem {
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default, PartialEq)]
 pub struct ShoppingCart {
-    pub items: HashMap<i32, CartItem>,
+    pub items: HashMap<u32, CartItem>,
 }

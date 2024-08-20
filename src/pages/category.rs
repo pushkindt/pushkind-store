@@ -1,5 +1,5 @@
 use crate::models::category::Category;
-use crate::models::product::{Product, Products};
+use crate::models::product::Products;
 use crate::pages::products::ProductCards;
 use leptos::*;
 use leptos_router::*;

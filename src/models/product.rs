@@ -7,15 +7,15 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default, PartialEq)]
 pub struct Products {
-    pub total: i32,
-    pub page: i32,
-    pub pages: i32,
+    pub total: u32,
+    pub page: u32,
+    pub pages: u32,
     pub products: Vec<Product>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default, PartialEq)]
 pub struct Product {
-    pub id: i32,
+    pub id: u32,
     pub vendor: String,
     pub name: String,
     pub sku: String,
@@ -23,7 +23,7 @@ pub struct Product {
     pub prices: Option<HashMap<String, f32>>,
     pub image: Option<String>,
     pub measurement: Option<String>,
-    pub cat_id: i32,
+    pub cat_id: u32,
     pub category: String,
     pub description: Option<String>,
     pub options: Option<HashMap<String, String>>,
@@ -39,7 +39,7 @@ impl Product {
         make_backend_url(image)
     }
 
-    pub async fn load(id: i32) -> Option<Product> {
+    pub async fn load(id: u32) -> Option<Product> {
         let url = make_backend_url(&format!("api/product/{}", id));
         let response = match reqwest::get(url).await {
             Ok(response) => response,
