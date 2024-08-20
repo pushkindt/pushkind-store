@@ -2,6 +2,7 @@ use crate::models::product::{Product, Products};
 use crate::models::shopping_cart::{CartItem, ShoppingCart};
 use crate::utils::Paginator;
 use leptos::*;
+use leptos_router::*;
 
 #[component]
 pub fn ProductModal() -> impl IntoView {
@@ -170,6 +171,15 @@ pub fn ProductModal() -> impl IntoView {
 
 #[component]
 fn ProductPagination(#[prop(into)] products: Signal<Option<Products>>) -> impl IntoView {
+    let mut query = use_query_map().get_untracked();
+    query.remove("page");
+    let mut query_string = query.to_query_string();
+    if query_string.len() == 0 {
+        query_string.insert(0, '?');
+    } else {
+        query_string.push('&');
+    }
+
     let paginator = move || match products.get() {
         None => Paginator::new(1, 1),
         Some(products) => Paginator::new(products.page as usize, products.pages as usize),
@@ -189,12 +199,12 @@ fn ProductPagination(#[prop(into)] products: Signal<Option<Products>>) -> impl I
                             None => view! { <li class="page-item disabled"><a class="page-link" href="#">...</a></li> }.into_view(),
                             Some(page) if page == current_page() as usize => view! {
                                 <li class="page-item active">
-                                    <a class="page-link" href=format!("?page={}", page)>{page.to_string()}</a>
+                                    <a class="page-link" href=format!("{}page={}", query_string, page)>{page.to_string()}</a>
                                 </li>
                             }.into_view(),
                             Some(page) => view! {
                                 <li class="page-item">
-                                    <a class="page-link" href=format!("?page={}", page)>{page.to_string()}</a>
+                                    <a class="page-link" href=format!("{}page={}", query_string, page)>{page.to_string()}</a>
                                 </li>
                             }.into_view(),
                         }

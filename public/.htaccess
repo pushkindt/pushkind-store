@@ -1,0 +1,14 @@
+RewriteEngine On
+
+RewriteCond %{REQUEST_URI} ^.+/favicon\.ico$
+RewriteRule . /logo.png [L]
+RewriteCond %{REQUEST_URI} ^.+/pushkind-store_bg\.wasm$
+RewriteRule . /pushkind-store_bg.wasm [L]
+RewriteCond %{REQUEST_URI} ^.+/pushkind-store\.js$
+RewriteRule . /pushkind-store.js [L]
+
+RewriteCond %{REQUEST_URI} !^/index\.html$
+RewriteCond %{REQUEST_URI} !^/favicon\.ico$
+RewriteCond %{REQUEST_URI} !^/pushkind-store_bg\.wasm$
+RewriteCond %{REQUEST_URI} !^/pushkind-store\.js$
+RewriteRule . /index.html [L]
