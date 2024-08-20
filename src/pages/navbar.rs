@@ -107,7 +107,6 @@ pub fn Navbar() -> impl IntoView {
                         }
                     }).collect_view()
                 }}
-                <a class="badge text-bg-secondary me-1 text-decoration-none" href="/">"все"</a>
             </div>
         </div>
     }

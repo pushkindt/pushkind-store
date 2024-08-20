@@ -71,7 +71,7 @@ pub fn CategoryPage() -> impl IntoView {
                         move || {
                             match category_name() {
                                 None => view! {  }.into_view(),
-                                Some(category_name) => view! { <li class="breadcrumb-item active" aria-current="page">{category_name}</li> }.into_view(),
+                                Some(category_name) => view! { <li class="breadcrumb-item active" aria-current="page">"Категория: "<a href=format!("/category/{}", cat_id())>{category_name}</a></li> }.into_view(),
                             }
                         }
                     }
@@ -79,7 +79,7 @@ pub fn CategoryPage() -> impl IntoView {
                         move || {
                             match tag() {
                                 None => view! {  }.into_view(),
-                                Some(tag_name) => view! { <li class="breadcrumb-item active" aria-current="page">{tag_name}</li> }.into_view(),
+                                Some(tag_name) => view! { <li class="breadcrumb-item active" aria-current="page">"Тег: "{tag_name}</li> }.into_view(),
                             }
                         }
                     }
