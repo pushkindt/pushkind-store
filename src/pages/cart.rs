@@ -3,6 +3,7 @@ use crate::models::product::Product;
 use crate::models::shopping_cart::{CartItem, ShoppingCart};
 use crate::utils::make_backend_url;
 use leptos::*;
+use leptos_oidc::{Auth, Authenticated, LoginLink};
 
 #[component]
 pub fn CartModal() -> impl IntoView {
@@ -52,9 +53,15 @@ pub fn CartModal() -> impl IntoView {
                                 <div class="row my-1">
                                     <div class="col">
                                         <input type="hidden" name="cart" value=cart_json_string />
-                                        <button type="submit" class="btn btn-primary">
-                                            "Заказать"
-                                        </button>
+                                        <Authenticated unauthenticated=move || {
+                                            view! {
+                                                <LoginLink class="text-muted ms-3">Авторизоваться</LoginLink>
+                                            }
+                                        }>
+                                            <button type="submit" class="btn btn-primary">
+                                                "Заказать"
+                                            </button>
+                                        </Authenticated>
                                     </div>
                                 </div>
                             </form>

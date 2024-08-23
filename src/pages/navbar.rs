@@ -4,6 +4,7 @@ use crate::models::shopping_cart::ShoppingCart;
 use crate::models::tag::load_tags;
 use crate::utils::make_backend_url;
 use leptos::*;
+use leptos_oidc::{Auth, Authenticated, LoginLink};
 
 #[component]
 pub fn Navbar() -> impl IntoView {
@@ -91,9 +92,15 @@ pub fn Navbar() -> impl IntoView {
                                 <span class="visually-hidden">items in cart</span>
                             </span>
                         </a>
-                        <a class="text-muted ms-3" href=make_backend_url(env::APP_SIGNIN_URL)>
-                            <i class="bi bi-person-circle fs-4"></i>
-                        </a>
+                        <Authenticated unauthenticated=move || {
+                            view! {
+                                <LoginLink class="text-muted ms-3"><i class="bi bi-box-arrow-right fs-4"></i></LoginLink>
+                            }
+                        }>
+                            <a class="text-muted ms-3" href=env::APP_BACKEND_URL>
+                                <i class="bi bi-person-circle fs-4"></i>
+                            </a>
+                        </Authenticated>
                     </form>
                 </div>
             </div>
