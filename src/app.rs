@@ -38,8 +38,8 @@ pub fn AppWithRouter() -> impl IntoView {
     let auth_parameters = AuthParameters {
         issuer: make_backend_url(env::APP_SIGNIN_URL),
         client_id: env::APP_SIGNIN_CLIENT.to_string(),
-        redirect_uri: "http://localhost:3000/".to_string(),
-        post_logout_redirect_uri: "http://localhost:3000/".to_string(),
+        redirect_uri: make_backend_url(env::APP_SIGNIN_REDIRECT_URL),
+        post_logout_redirect_uri: make_backend_url(env::APP_SIGNIN_REDIRECT_URL),
         challenge: Challenge::S256,
         scope: Some("openid%20profile%20email".to_string()),
         audience: None,
