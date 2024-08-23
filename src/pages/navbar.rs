@@ -4,7 +4,7 @@ use crate::models::shopping_cart::ShoppingCart;
 use crate::models::tag::load_tags;
 use crate::utils::make_backend_url;
 use leptos::*;
-use leptos_oidc::{Auth, Authenticated, LoginLink};
+use leptos_oidc::{Authenticated, LoginLink};
 
 #[component]
 pub fn Navbar() -> impl IntoView {

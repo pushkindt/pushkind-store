@@ -3,7 +3,7 @@ use crate::models::product::Product;
 use crate::models::shopping_cart::{CartItem, ShoppingCart};
 use crate::utils::make_backend_url;
 use leptos::*;
-use leptos_oidc::{Auth, Authenticated, LoginLink};
+use leptos_oidc::{Authenticated, LoginLink};
 
 #[component]
 pub fn CartModal() -> impl IntoView {
