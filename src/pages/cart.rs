@@ -1,15 +1,13 @@
 use crate::env;
 use crate::models::product::Product;
 use crate::models::shopping_cart::{CartItem, ShoppingCart};
-use crate::models::user::User;
 use crate::utils::make_backend_url;
 use leptos::*;
-use leptos_oidc::{Algorithm, Auth, Authenticated, LoginLink};
+use leptos_oidc::{Authenticated, LoginLink};
 
 #[component]
 pub fn CartModal() -> impl IntoView {
-    let get_cart =
-        use_context::<Signal<ShoppingCart>>().expect("Get shopping cart signal not found");
+    let get_cart = expect_context::<Signal<ShoppingCart>>();
 
     let cart_count = move || get_cart().items.len();
 
@@ -25,22 +23,6 @@ pub fn CartModal() -> impl IntoView {
     };
 
     let cart_items = move || get_cart().items.values().cloned().collect::<Vec<_>>();
-
-    let auth = use_context::<ReadSignal<Auth>>().expect("Auth context not found");
-
-    let user = move || {
-        auth()
-            .decoded_id_token::<User>(Algorithm::RS256, &[env::APP_SIGNIN_CLIENT])
-            .flatten()
-    };
-    let user_email = move || user().map(|user| user.claims.email).unwrap_or_default();
-
-    let user_price_level = move || {
-        user()
-            .map(|user| user.claims.price_level)
-            .unwrap_or_default()
-            .to_string()
-    };
 
     view! {
         <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
@@ -62,18 +44,6 @@ pub fn CartModal() -> impl IntoView {
                             } />
                             <form method="POST" action=make_backend_url(env::APP_CART_URL)>
                                 <div class="row my-1">
-                                    <label for="shoppingCartEmail" class="col-sm-3 col-form-label">"Электронная почта:"</label>
-                                    <div class="col-sm-9">
-                                        <input name="email" readonly type="text" class="form-control-plaintext" id="shoppingCartEmail" placeholder="<Пользователь не авторизован>" prop:value=user_email />
-                                    </div>
-                                </div>
-                                <div class="row my-1">
-                                    <label for="shoppingCartPriceLevel" class="col-sm-3 col-form-label">"Уровень цен:"</label>
-                                    <div class="col-sm-9">
-                                        <input readonly type="text" class="form-control-plaintext" id="shoppingCartPriceLevel" prop:value=user_price_level />
-                                    </div>
-                                </div>
-                                <div class="row my-1">
                                     <div class="col">
                                         <textarea name="comment" class="form-control" rows="3" placeholder="Комментарий к заказу">
                                         </textarea>
@@ -84,7 +54,7 @@ pub fn CartModal() -> impl IntoView {
                                         <input type="hidden" name="cart" prop:value=cart_json_string />
                                         <Authenticated unauthenticated=move || {
                                             view! {
-                                                <LoginLink class="text-muted ms-3">Авторизоваться</LoginLink>
+                                                <LoginLink class="text-muted ms-3">"Авторизоваться"</LoginLink>
                                             }
                                         }>
                                             <button type="submit" class="btn btn-primary">
@@ -104,8 +74,7 @@ pub fn CartModal() -> impl IntoView {
 
 #[component]
 fn CartLineItem(item: CartItem) -> impl IntoView {
-    let set_product =
-        use_context::<WriteSignal<Option<Product>>>().expect("Set product signal not found");
+    let set_product = expect_context::<WriteSignal<Option<Product>>>();
 
     let product_image = item.product.get_image();
     let product_price = item.product.price;

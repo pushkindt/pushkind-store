@@ -8,8 +8,7 @@ use leptos_oidc::{Authenticated, LoginLink, LogoutLink};
 
 #[component]
 pub fn Navbar() -> impl IntoView {
-    let get_category =
-        use_context::<ReadSignal<Option<Category>>>().expect("Get category signal not found");
+    let get_category = expect_context::<ReadSignal<Option<Category>>>();
 
     let category_id = move || match get_category() {
         None => 0,
@@ -26,8 +25,7 @@ pub fn Navbar() -> impl IntoView {
         Some(category) => category.name,
     };
 
-    let get_cart =
-        use_context::<Signal<ShoppingCart>>().expect("Get shopping cart signal not found");
+    let get_cart = expect_context::<Signal<ShoppingCart>>();
 
     let cart_count = move || get_cart().items.len();
 
@@ -94,7 +92,7 @@ pub fn Navbar() -> impl IntoView {
                         </a>
                         <Authenticated unauthenticated=move || {
                             view! {
-                                <LoginLink class="text-muted ms-3"><i class="bi bi-box-arrow-right fs-4"></i></LoginLink>
+                                <LoginLink class="text-muted ms-3 mt-1"><i class="bi bi-box-arrow-right fs-4"></i></LoginLink>
                             }
                         }>
 

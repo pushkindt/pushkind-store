@@ -1,4 +1,4 @@
-use crate::models::product::{Product, Products};
+use crate::models::product::{PriceLevel, Product, Products};
 use crate::models::shopping_cart::{CartItem, ShoppingCart};
 use crate::utils::Paginator;
 use leptos::*;
@@ -6,14 +6,11 @@ use leptos_router::*;
 
 #[component]
 pub fn ProductModal() -> impl IntoView {
-    let get_product =
-        use_context::<ReadSignal<Option<Product>>>().expect("Get product signal not found");
+    let get_product = expect_context::<ReadSignal<Option<Product>>>();
 
-    let get_cart =
-        use_context::<Signal<ShoppingCart>>().expect("Get shopping cart signal not found");
+    let get_cart = expect_context::<Signal<ShoppingCart>>();
 
-    let set_cart =
-        use_context::<WriteSignal<ShoppingCart>>().expect("Set shopping cart signal not found");
+    let set_cart = expect_context::<WriteSignal<ShoppingCart>>();
 
     let product_name = move || match get_product() {
         None => "".to_string(),
@@ -247,11 +244,10 @@ pub fn ProductCards(#[prop(into)] products: Signal<Option<Products>>) -> impl In
 
 #[component]
 fn ProductCard(product: Product) -> impl IntoView {
-    let set_product =
-        use_context::<WriteSignal<Option<Product>>>().expect("Set product signal not found");
+    let set_product = expect_context::<WriteSignal<Option<Product>>>();
 
     let product_image = product.get_image();
-    let product_price = product.price;
+    let product_price = product.get_price(PriceLevel::default());
     let product_name = product.name.clone();
 
     view! {

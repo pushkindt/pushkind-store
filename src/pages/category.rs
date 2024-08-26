@@ -39,8 +39,7 @@ pub fn CategoryPage() -> impl IntoView {
         Some(products) => products,
     };
 
-    let set_category =
-        use_context::<WriteSignal<Option<Category>>>().expect("Set category signal not found");
+    let set_category = expect_context::<WriteSignal<Option<Category>>>();
     let category = create_resource(cat_id, |value| async move { Category::load(value).await });
 
     let category = move || match category.get() {

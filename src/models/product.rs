@@ -5,7 +5,18 @@ use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
 
-use super::user::PriceLevels;
+#[allow(non_camel_case_types)]
+#[derive(Debug, Serialize, Deserialize, Clone, Eq, Hash, PartialEq)]
+pub enum PriceLevel {
+    online_store,
+    marketplace,
+    small_wholesale,
+    large_wholesale,
+    distributor,
+    exclusive,
+    retail,
+    retail_promo,
+}
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default, PartialEq)]
 pub struct Products {
@@ -22,7 +33,7 @@ pub struct Product {
     pub name: String,
     pub sku: String,
     pub price: f32,
-    pub prices: Option<HashMap<PriceLevels, f32>>,
+    pub prices: Option<HashMap<PriceLevel, f32>>,
     pub image: Option<String>,
     pub measurement: Option<String>,
     pub cat_id: u32,
@@ -33,7 +44,7 @@ pub struct Product {
 }
 
 impl Product {
-    pub fn get_price(&self, price_level: PriceLevels) -> f32 {
+    pub fn get_price(&self, price_level: PriceLevel) -> f32 {
         match &self.prices {
             Some(prices) => match prices.get(&price_level) {
                 Some(price) => *price,
@@ -95,5 +106,27 @@ impl Products {
             key, page
         )))
         .await
+    }
+}
+
+impl Default for PriceLevel {
+    fn default() -> Self {
+        PriceLevel::online_store
+    }
+}
+
+impl PriceLevel {
+    pub fn to_string(&self) -> String {
+        match self {
+            PriceLevel::online_store => "ИНТЕРНЕТ",
+            PriceLevel::marketplace => "МАРКЕТ",
+            PriceLevel::small_wholesale => "МЕЛКИЙ ОПТ",
+            PriceLevel::large_wholesale => "КРУПНЫЙ ОПТ",
+            PriceLevel::distributor => "ДИСТРИБЬЮТОР",
+            PriceLevel::exclusive => "ЭКСКЛЮЗИВ",
+            PriceLevel::retail => "СЕТИ",
+            PriceLevel::retail_promo => "СЕТИ ПРОМО",
+        }
+        .to_string()
     }
 }

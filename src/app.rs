@@ -45,24 +45,18 @@ pub fn AppWithRouter() -> impl IntoView {
         audience: None,
         prompt: None,
     };
-    let auth = Auth::init(auth_parameters);
-    let (get_auth, _) = create_signal(auth);
-
-    provide_context(get_auth);
+    let _auth = Auth::init(auth_parameters);
 
     view! {
-        <Router>
-            <Navbar />
-            <ProductModal />
-            <CartModal />
-            <Routes>
-                <Route path="/" view=move || view! { <CategoryPage /> }/>
-                <Route path="/search" view=move || view! { <SearchPage /> }/>
-                <Route path="/category/:id" view=move || view! { <CategoryPage /> } />
-                <Route path="/category/:id/tag/:tag" view=move || view! { <CategoryPage /> } />
-                <Route path="/*" view=|| view! { <h1>404 Not Found</h1> } />
-                // <Route path="/cart" view=|| view! { <CartPage /> } />
-            </Routes>
-        </Router>
+        <Navbar />
+        <ProductModal />
+        <CartModal />
+        <Routes>
+            <Route path="/" view=move || view! { <CategoryPage /> }/>
+            <Route path="/search" view=move || view! { <SearchPage /> }/>
+            <Route path="/category/:id" view=move || view! { <CategoryPage /> } />
+            <Route path="/category/:id/tag/:tag" view=move || view! { <CategoryPage /> } />
+            <Route path="/*" view=|| view! { <h1>404 Not Found</h1> } />
+        </Routes>
     }
 }
