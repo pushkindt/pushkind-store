@@ -4,7 +4,7 @@ use crate::models::shopping_cart::ShoppingCart;
 use crate::models::tag::load_tags;
 use crate::utils::make_backend_url;
 use leptos::*;
-use leptos_oidc::{Authenticated, LoginLink};
+use leptos_oidc::{Authenticated, LoginLink, LogoutLink};
 
 #[component]
 pub fn Navbar() -> impl IntoView {
@@ -85,7 +85,7 @@ pub fn Navbar() -> impl IntoView {
                             <input name="q" class="form-control" type="search" placeholder="Поиск" aria-label="Search" />
                             <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
                         </div>
-                        <a class="text-muted ms-1" href="#" data-bs-toggle="modal" data-bs-target="#cartModal">
+                        <a class="text-muted ms-1 mt-1" href="#" data-bs-toggle="modal" data-bs-target="#cartModal">
                             <i class="bi bi-cart fs-4"></i>
                             <span class="position-absolute translate-middle badge rounded-pill bg-danger">
                                 {cart_count}
@@ -97,9 +97,17 @@ pub fn Navbar() -> impl IntoView {
                                 <LoginLink class="text-muted ms-3"><i class="bi bi-box-arrow-right fs-4"></i></LoginLink>
                             }
                         }>
-                            <a class="text-muted ms-3" href=env::APP_BACKEND_URL>
-                                <i class="bi bi-person-circle fs-4"></i>
-                            </a>
+
+                            <div class="dropdown-center">
+                                <button class="btn btn-link text-muted dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-person-circle fs-4"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href=make_backend_url(env::APP_PROFILE_URL)>"Профиль"</a></li>
+                                    <li><LogoutLink class="dropdown-item">"Выйти"</LogoutLink></li>
+                                </ul>
+                            </div>
+
                         </Authenticated>
                     </form>
                 </div>

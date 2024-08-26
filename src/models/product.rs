@@ -5,6 +5,8 @@ use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
 
+use super::user::PriceLevels;
+
 #[derive(Debug, Serialize, Deserialize, Clone, Default, PartialEq)]
 pub struct Products {
     pub total: u32,
@@ -20,7 +22,7 @@ pub struct Product {
     pub name: String,
     pub sku: String,
     pub price: f32,
-    pub prices: Option<HashMap<String, f32>>,
+    pub prices: Option<HashMap<PriceLevels, f32>>,
     pub image: Option<String>,
     pub measurement: Option<String>,
     pub cat_id: u32,
@@ -31,6 +33,16 @@ pub struct Product {
 }
 
 impl Product {
+    pub fn get_price(&self, price_level: PriceLevels) -> f32 {
+        match &self.prices {
+            Some(prices) => match prices.get(&price_level) {
+                Some(price) => *price,
+                None => self.price,
+            },
+            None => self.price,
+        }
+    }
+
     pub fn get_image(&self) -> String {
         let image = match &self.image {
             Some(image) => image,

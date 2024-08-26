@@ -46,8 +46,9 @@ pub fn AppWithRouter() -> impl IntoView {
         prompt: None,
     };
     let auth = Auth::init(auth_parameters);
+    let (get_auth, _) = create_signal(auth);
 
-    provide_context(auth);
+    provide_context(get_auth);
 
     view! {
         <Router>
