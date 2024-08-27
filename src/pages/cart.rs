@@ -9,6 +9,9 @@ use leptos_oidc::{Authenticated, LoginLink};
 #[component]
 pub fn CartModal() -> impl IntoView {
     let get_cart = expect_context::<Signal<ShoppingCart>>();
+
+    let set_cart = expect_context::<WriteSignal<ShoppingCart>>();
+
     let get_user = expect_context::<ReadSignal<User>>();
 
     let cart_count = move || get_cart().items.len();
@@ -29,6 +32,12 @@ pub fn CartModal() -> impl IntoView {
     let price_level = move || get_user().price_level;
 
     let user_email = move || get_user().email.clone();
+
+    let on_submit = move |_| {
+        set_cart.update(|cart| {
+            cart.items.clear();
+        });
+    };
 
     view! {
         <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
@@ -53,7 +62,7 @@ pub fn CartModal() -> impl IntoView {
                                 }
                             }
 
-                            <form method="POST" action=make_backend_url(env::APP_CART_URL)>
+                            <form method="POST" action=make_backend_url(env::APP_CART_URL) enctype="multipart/form-data" on:submit=on_submit>
 
                                 <div class="row my-1">
                                     <label for="shoppingCartEmail" class="col-sm-3 col-form-label">"Электронный адрес:"</label>
@@ -65,12 +74,13 @@ pub fn CartModal() -> impl IntoView {
                                     <label for="shoppingCartPriceLevel" class="col-sm-3 col-form-label">"Уровень цен:"</label>
                                     <div class="col-sm-9">
                                         <input readonly type="text" class="form-control-plaintext" id="shoppingCartPriceLevel" prop:value={move||price_level().to_string()} />
+                                        <input name="price_level" type="hidden" prop:value={move||price_level() as u8} />
                                     </div>
                                 </div>
 
                                 <div class="row my-1">
                                     <div class="col">
-                                        <textarea name="comment" class="form-control" rows="3" placeholder="Комментарий к заказу">
+                                        <textarea name="comment" class="form-control" rows="3" placeholder="Комментарий к заказу" maxlength="256">
                                         </textarea>
                                     </div>
                                 </div>

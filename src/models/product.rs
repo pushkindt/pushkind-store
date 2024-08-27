@@ -8,14 +8,14 @@ use serde::{Deserialize, Serialize};
 #[allow(non_camel_case_types)]
 #[derive(Debug, Serialize, Deserialize, Clone, Eq, Hash, PartialEq)]
 pub enum PriceLevel {
-    online_store,
-    marketplace,
-    small_wholesale,
-    large_wholesale,
-    distributor,
-    exclusive,
-    retail,
-    retail_promo,
+    online_store = 0,
+    marketplace = 1,
+    small_wholesale = 2,
+    large_wholesale = 3,
+    distributor = 4,
+    exclusive = 5,
+    retail = 6,
+    retail_promo = 7,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default, PartialEq)]
@@ -33,13 +33,13 @@ pub struct Product {
     pub name: String,
     pub sku: String,
     pub price: f32,
+    pub cat_id: u32,
+    pub category: String,
     pub prices: Option<HashMap<PriceLevel, f32>>,
     pub image: Option<String>,
     pub measurement: Option<String>,
-    pub cat_id: u32,
-    pub category: String,
     pub description: Option<String>,
-    pub options: Option<HashMap<String, String>>,
+    pub options: Option<HashMap<String, Vec<String>>>,
     pub tags: Option<Vec<String>>,
 }
 

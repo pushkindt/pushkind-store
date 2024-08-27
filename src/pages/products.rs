@@ -136,7 +136,7 @@ pub fn ProductModal() -> impl IntoView {
                                         </div>
                                         <div class="row my-1">
                                             <div class="col">
-                                                <textarea prop:value=product_comment node_ref=comment_element name="comment" class="form-control" rows="3" placeholder="Комментарий">
+                                                <textarea prop:value=product_comment node_ref=comment_element name="comment" class="form-control" rows="3" placeholder="Комментарий" maxlength="256">
                                                 </textarea>
                                             </div>
                                         </div>
