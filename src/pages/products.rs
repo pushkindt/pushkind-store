@@ -235,8 +235,8 @@ pub fn ProductCards(#[prop(into)] products: Signal<Option<Products>>) -> impl In
                     0 => view! { <div class="row"><div class="col"><div class="alert alert-primary">"Ничего не найдено"</div></div></div> }.into_view(),
                     _ => view! {
                         <div class="row row-cols-1 row-cols-lg-6 row-cols-md-4 row-cols-sm-2">
-                        <For each=products_products key=move |product| product.id*(price_level() as u32) children=move |product| view! {
-                            <ProductCard product=product.clone() price_level=price_level() />
+                        <For each=products_products key=move |product| product.id children=move |product| view! {
+                            <ProductCard product=product.clone() price_level=Signal::derive(price_level) />
                         } />
                         </div>
                     }.into_view(),
@@ -249,11 +249,12 @@ pub fn ProductCards(#[prop(into)] products: Signal<Option<Products>>) -> impl In
 }
 
 #[component]
-fn ProductCard(product: Product, price_level: PriceLevel) -> impl IntoView {
+fn ProductCard(product: Product, #[prop(into)] price_level: Signal<PriceLevel>) -> impl IntoView {
     let set_product = expect_context::<WriteSignal<Option<Product>>>();
+    let product_clone = product.clone();
 
     let product_image = product.get_image();
-    let product_price = product.get_price(&price_level);
+    let product_price = move || product_clone.get_price(&price_level());
     let product_name = product.name.clone();
 
     view! {
@@ -261,7 +262,7 @@ fn ProductCard(product: Product, price_level: PriceLevel) -> impl IntoView {
             <div class="card text-center selectable overflow-hidden h-100" data-bs-toggle="modal" data-bs-target="#productModal" on:click=move |_| {set_product(Some(product.clone()))}>
                 <img class="card-img-top" src=product_image alt="thumbnail" />
                 <div class="card-body py-0">
-                    <h5 class="card-title text-start">{format!("{:.2}", product_price)}"₽"</h5>
+                    <h5 class="card-title text-start">{move || format!("{:.2}", product_price() )}"₽"</h5>
                 </div>
                 <div class="card-footer bg-white border-top-0 text-start">
                     {product_name}
