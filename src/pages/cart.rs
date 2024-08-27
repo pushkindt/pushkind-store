@@ -45,9 +45,14 @@ pub fn CartModal() -> impl IntoView {
                                     "Позиций: "{cart_count}" на сумму "{move || format!("{:.2}", cart_sum())}"₽"
                                 </div>
                             </div>
-                            <For each=cart_items key=move |item| item.product.id*item.quantity*(price_level() as u32) children=move |item| view! {
-                                <CartLineItem item=item.clone() price_level=price_level() />
-                            } />
+
+                            { move || {
+                                    cart_items().into_iter()
+                                    .map(|item| view! { <CartLineItem item=item price_level=Signal::derive(price_level) /> })
+                                    .collect_view()
+                                }
+                            }
+
                             <form method="POST" action=make_backend_url(env::APP_CART_URL)>
 
                                 <div class="row my-1">
@@ -93,11 +98,13 @@ pub fn CartModal() -> impl IntoView {
 }
 
 #[component]
-fn CartLineItem(item: CartItem, price_level: PriceLevel) -> impl IntoView {
+fn CartLineItem(item: CartItem, #[prop(into)] price_level: Signal<PriceLevel>) -> impl IntoView {
     let set_product = expect_context::<WriteSignal<Option<Product>>>();
 
+    let product_clone = item.product.clone();
+
     let product_image = item.product.get_image();
-    let product_price = item.product.get_price(&price_level);
+    let product_price = move || product_clone.get_price(&price_level());
     let product_name = item.product.name.clone();
     let product_sku = item.product.sku.clone();
     let product_measurement = item.product.measurement.clone().unwrap_or_default();
@@ -120,7 +127,7 @@ fn CartLineItem(item: CartItem, price_level: PriceLevel) -> impl IntoView {
             <div class="col-sm">
                 <div class="row">
                     <div class="col">
-                        {item_quantity}" "{product_measurement}" по "{format!("{:.2}", product_price)}"₽"
+                        {item_quantity}" "{product_measurement}" по "{move || format!("{:.2}", product_price() )}"₽"
                     </div>
                 </div>
                 <div class="row">
