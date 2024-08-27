@@ -45,7 +45,7 @@ pub fn CartModal() -> impl IntoView {
                                     "Позиций: "{cart_count}" на сумму "{move || format!("{:.2}", cart_sum())}"₽"
                                 </div>
                             </div>
-                            <For each=cart_items key=|item| item.product.id*item.quantity children=move |item| view! {
+                            <For each=cart_items key=move |item| item.product.id*item.quantity*(price_level() as u32) children=move |item| view! {
                                 <CartLineItem item=item.clone() price_level=price_level() />
                             } />
                             <form method="POST" action=make_backend_url(env::APP_CART_URL)>
@@ -53,7 +53,7 @@ pub fn CartModal() -> impl IntoView {
                                 <div class="row my-1">
                                     <label for="shoppingCartEmail" class="col-sm-3 col-form-label">"Электронный адрес:"</label>
                                     <div class="col-sm-9">
-                                        <input name="email" readonly type="text" class="form-control-plaintext" id="shoppingCartEmail" prop:value=user_email />
+                                        <input name="email" readonly type="text" class="form-control-plaintext" id="shoppingCartEmail" placeholder="<не авторизован>" prop:value=user_email />
                                     </div>
                                 </div>
                                 <div class="row my-1">

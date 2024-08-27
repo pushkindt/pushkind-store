@@ -235,7 +235,7 @@ pub fn ProductCards(#[prop(into)] products: Signal<Option<Products>>) -> impl In
                     0 => view! { <div class="row"><div class="col"><div class="alert alert-primary">"Ничего не найдено"</div></div></div> }.into_view(),
                     _ => view! {
                         <div class="row row-cols-1 row-cols-lg-6 row-cols-md-4 row-cols-sm-2">
-                        <For each=products_products key=|product| product.id children=move |product| view! {
+                        <For each=products_products key=move |product| product.id*(price_level() as u32) children=move |product| view! {
                             <ProductCard product=product.clone() price_level=price_level() />
                         } />
                         </div>
