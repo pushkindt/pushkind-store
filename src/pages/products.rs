@@ -1,5 +1,6 @@
 use crate::models::product::{PriceLevel, Product, Products};
 use crate::models::shopping_cart::{CartItem, ShoppingCart};
+use crate::models::user::User;
 use crate::utils::Paginator;
 use leptos::*;
 use leptos_router::*;
@@ -11,6 +12,8 @@ pub fn ProductModal() -> impl IntoView {
     let get_cart = expect_context::<Signal<ShoppingCart>>();
 
     let set_cart = expect_context::<WriteSignal<ShoppingCart>>();
+
+    let get_user = expect_context::<ReadSignal<User>>();
 
     let product_name = move || match get_product() {
         None => "".to_string(),
@@ -30,7 +33,7 @@ pub fn ProductModal() -> impl IntoView {
     };
     let product_price = move || match get_product() {
         None => "0.00".to_string(),
-        Some(product) => format!("{:.2}", product.price),
+        Some(product) => format!("{:.2}", product.get_price(&get_user().price_level)),
     };
     let product_sku = move || match get_product() {
         None => "".to_string(),
@@ -219,6 +222,9 @@ pub fn ProductCards(#[prop(into)] products: Signal<Option<Products>>) -> impl In
         Some(products) => products.products,
     };
 
+    let get_user = expect_context::<ReadSignal<User>>();
+    let price_level = move || get_user().price_level;
+
     view! {
         <ProductPagination products=products />
 
@@ -230,7 +236,7 @@ pub fn ProductCards(#[prop(into)] products: Signal<Option<Products>>) -> impl In
                     _ => view! {
                         <div class="row row-cols-1 row-cols-lg-6 row-cols-md-4 row-cols-sm-2">
                         <For each=products_products key=|product| product.id children=move |product| view! {
-                            <ProductCard product=product.clone() />
+                            <ProductCard product=product.clone() price_level=price_level() />
                         } />
                         </div>
                     }.into_view(),
@@ -243,11 +249,11 @@ pub fn ProductCards(#[prop(into)] products: Signal<Option<Products>>) -> impl In
 }
 
 #[component]
-fn ProductCard(product: Product) -> impl IntoView {
+fn ProductCard(product: Product, price_level: PriceLevel) -> impl IntoView {
     let set_product = expect_context::<WriteSignal<Option<Product>>>();
 
     let product_image = product.get_image();
-    let product_price = product.get_price(PriceLevel::default());
+    let product_price = product.get_price(&price_level);
     let product_name = product.name.clone();
 
     view! {

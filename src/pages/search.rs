@@ -27,7 +27,7 @@ pub fn SearchPage() -> impl IntoView {
     let search_page = move || (search(), page());
 
     let products = create_resource(search_page, |value| async move {
-        Products::search(value.0, value.1.unwrap_or(1)).await
+        Products::search(&value.0, value.1.unwrap_or(1)).await
     });
 
     let products = move || match products.get() {

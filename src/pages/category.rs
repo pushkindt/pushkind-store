@@ -32,7 +32,7 @@ pub fn CategoryPage() -> impl IntoView {
     let page = move || query.with(|query| query.as_ref().map(|query| query.page).unwrap_or(1));
     let products_query_params = move || (cat_id(), page(), tag());
     let products = create_resource(products_query_params, |value| async move {
-        Products::load(value.0, value.1, value.2).await
+        Products::load(value.0, value.1, &value.2).await
     });
     let products = move || match products.get() {
         None => Some(Products::default()),

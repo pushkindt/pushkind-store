@@ -1,5 +1,6 @@
 use crate::models::product::Product;
 use crate::models::shopping_cart::ShoppingCart;
+use crate::models::user::User;
 use crate::pages::cart::CartModal;
 use crate::pages::category::CategoryPage;
 use crate::pages::navbar::Navbar;
@@ -9,7 +10,7 @@ use crate::utils::make_backend_url;
 use crate::{env, models::category::Category};
 use codee::string::JsonSerdeCodec;
 use leptos::*;
-use leptos_oidc::{Auth, AuthParameters, Challenge};
+use leptos_oidc::{Auth, AuthParameters, Authenticated, Challenge};
 use leptos_router::*;
 use leptos_use::storage::use_session_storage;
 
@@ -45,12 +46,20 @@ pub fn AppWithRouter() -> impl IntoView {
         audience: None,
         prompt: None,
     };
-    let _auth = Auth::init(auth_parameters);
+    let auth = Auth::init(auth_parameters);
+    let (get_user, set_user) = create_signal(User::from_auth(&auth));
+
+    provide_context(get_user);
 
     view! {
         <Navbar />
         <ProductModal />
         <CartModal />
+        <Authenticated unauthenticated=move || {
+            set_user.update(|user| *user = User::default());
+        }>
+            {set_user.update(|user| *user = User::from_auth(&auth))}
+        </Authenticated>
         <Routes>
             <Route path="/" view=move || view! { <CategoryPage /> }/>
             <Route path="/search" view=move || view! { <SearchPage /> }/>
