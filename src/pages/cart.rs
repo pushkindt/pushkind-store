@@ -33,11 +33,11 @@ pub fn CartModal() -> impl IntoView {
 
     let user_email = move || get_user().email.clone();
 
-    let on_submit = move |_| {
-        set_cart.update(|cart| {
-            cart.items.clear();
-        });
-    };
+    // let on_submit = move |_| {
+    //     set_cart.update(|cart| {
+    //         cart.items.clear();
+    //     });
+    // };
 
     view! {
         <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
@@ -62,7 +62,7 @@ pub fn CartModal() -> impl IntoView {
                                 }
                             }
 
-                            <form method="POST" action=make_backend_url(env::APP_CART_URL) enctype="multipart/form-data" on:submit=on_submit>
+                            <form method="POST" action=make_backend_url(env::APP_CART_URL) enctype="multipart/form-data">
 
                                 <div class="row my-1">
                                     <label for="shoppingCartEmail" class="col-sm-3 col-form-label">"Электронный адрес:"</label>
