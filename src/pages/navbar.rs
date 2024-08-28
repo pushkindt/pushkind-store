@@ -39,7 +39,7 @@ pub fn Navbar() -> impl IntoView {
     };
 
     view! {
-        <nav class="navbar navbar-expand-lg bg-body-tertiary px-5">
+        <nav class="navbar navbar-expand bg-body-tertiary">
             <div class="container-fluid">
                 <a class="navbar-brand" href=env::APP_BACKEND_URL>
                     <img class="logo" src=make_backend_url("/static/upload/logo1.png") alt="Logo" title="Nadin" />
