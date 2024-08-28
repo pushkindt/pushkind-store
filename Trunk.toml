@@ -5,7 +5,6 @@ trunk-version = "*"
 public_url = "/"
 minify = "always"
 release = true
-filehash = false
 
 [serve]
 # The address to serve on.
