@@ -10,7 +10,7 @@ use leptos_oidc::{Authenticated, LoginLink};
 pub fn CartModal() -> impl IntoView {
     let get_cart = expect_context::<Signal<ShoppingCart>>();
 
-    let set_cart = expect_context::<WriteSignal<ShoppingCart>>();
+    // let set_cart = expect_context::<WriteSignal<ShoppingCart>>();
 
     let get_user = expect_context::<ReadSignal<User>>();
 

@@ -10,6 +10,7 @@ use crate::utils::make_backend_url;
 use crate::{env, models::category::Category};
 use codee::string::JsonSerdeCodec;
 use leptos::*;
+use leptos_meta::Title;
 use leptos_oidc::{Auth, AuthParameters, Authenticated, Challenge};
 use leptos_router::*;
 use leptos_use::storage::use_session_storage;
@@ -17,6 +18,7 @@ use leptos_use::storage::use_session_storage;
 #[component]
 pub fn App() -> impl IntoView {
     view! {
+        <Title text={env::APP_TITLE} />
         <Router>
             <AppWithRouter/>
         </Router>
