@@ -41,7 +41,7 @@ pub fn Navbar() -> impl IntoView {
     view! {
         <nav class="navbar navbar-expand bg-body-tertiary">
             <div class="container-fluid">
-                <a class="navbar-brand" href=env::APP_BACKEND_URL>
+                <a class="navbar-brand me-0" href=env::APP_BACKEND_URL>
                     <img class="logo" src=make_backend_url("/static/upload/logo1.png") alt="Logo" title="Nadin" />
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -53,7 +53,7 @@ pub fn Navbar() -> impl IntoView {
                     {
                         move || match get_category() {
                             Some(_) => view! {
-                                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                <ul class="navbar-nav me-auto">
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                                             aria-expanded="false">
@@ -70,7 +70,7 @@ pub fn Navbar() -> impl IntoView {
                                 </ul>
                             }.into_view(),
                             None => view! {
-                                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                <ul class="navbar-nav me-auto">
                                     <li class="nav-item">
                                         <a class="nav-link" aria-current="page" href="/">Главная</a>
                                     </li>
