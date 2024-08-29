@@ -93,7 +93,7 @@ pub fn Navbar() -> impl IntoView {
                             </a>
                             <Authenticated unauthenticated=move || {
                                 view! {
-                                    <LoginLink class="nav-link text-muted ms-3"><i class="bi bi-box-arrow-right fs-4"></i></LoginLink>
+                                    <LoginLink class="nav-link text-muted ms-3"><i class="bi bi-door-open fs-4"></i></LoginLink>
                                 }
                             }>
 
@@ -102,8 +102,18 @@ pub fn Navbar() -> impl IntoView {
                                         <i class="bi bi-person-circle fs-4"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
-                                        <li><a class="dropdown-item" href=make_backend_url(env::APP_PROFILE_URL)>"Профиль"</a></li>
-                                        <li><LogoutLink class="dropdown-item">"Выйти"</LogoutLink></li>
+                                        <li>
+                                            <a class="dropdown-item icon-link" href=make_backend_url(env::APP_PROFILE_URL)>
+                                                <i class="bi bi-person mb-2"></i>
+                                                "Профиль"
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <LogoutLink class="dropdown-item icon-link">
+                                                <i class="bi bi-box-arrow-right mb-2"></i>
+                                                "Выйти"
+                                            </LogoutLink>
+                                        </li>
                                     </ul>
                                 </div>
 
