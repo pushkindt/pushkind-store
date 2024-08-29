@@ -89,7 +89,11 @@ pub fn CartModal() -> impl IntoView {
                                         <input type="hidden" name="cart" prop:value=cart_json_string />
                                         <Authenticated unauthenticated=move || {
                                             view! {
-                                                <LoginLink class="text-muted ms-3">"Авторизоваться"</LoginLink>
+                                                <div class="alert alert-warning">
+                                                    "Необходимо "
+                                                    <LoginLink class="text-muted">"aвторизоваться"</LoginLink>
+                                                    " для оформления заказа."
+                                                </div>
                                             }
                                         }>
                                             <button type="submit" class="btn btn-primary">

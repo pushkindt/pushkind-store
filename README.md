@@ -8,3 +8,4 @@ The following environment variables are required:
  - **APP_SIGNIN_REDIRECT_URL**: Post signin redirect URL
  - **APP_PROFILE_URL**: User profile URL
  - **APP_TITLE**: Application title
+ - **APP_LOGO_URL**: Application logo

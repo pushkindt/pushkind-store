@@ -39,87 +39,89 @@ pub fn Navbar() -> impl IntoView {
     };
 
     view! {
-        <nav class="navbar navbar-expand bg-body-tertiary">
-            <div class="container-fluid">
-                <a class="navbar-brand me-0" href=env::APP_BACKEND_URL>
-                    <img class="logo" src=make_backend_url("/static/upload/logo1.png") alt="Logo" title="Nadin" />
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                    aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    {
-                        move || match get_category() {
-                            Some(_) => view! {
-                                <ul class="navbar-nav me-auto">
-                                    <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                                            aria-expanded="false">
-                                            Категории
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item disabled" aria-disabled="true">{category_name}</a></li>
-                                            <li><hr class="dropdown-divider" /></li>
-                                            <For each=category_children key=|child| child.0 children=move |child| view! {
-                                                <li><a class="dropdown-item" href=format!("/category/{}", child.0)>{child.1.clone()}</a></li>
-                                            } />
-                                        </ul>
-                                    </li>
-                                </ul>
-                            }.into_view(),
-                            None => view! {
-                                <ul class="navbar-nav me-auto">
-                                    <li class="nav-item">
-                                        <a class="nav-link" aria-current="page" href="/">Главная</a>
-                                    </li>
-                                </ul>
-                            }.into_view()
-                        }
-                    }
-                    <form class="d-flex w-100" role="search" action="/search">
-                        <div class="input-group me-2">
-                            <input name="q" class="form-control" type="search" placeholder="Поиск" aria-label="Search" />
-                            <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
-                        </div>
-                        <a class="text-muted ms-1 mt-1" href="#" data-bs-toggle="modal" data-bs-target="#cartModal">
-                            <i class="bi bi-cart fs-4"></i>
-                            <span class="position-absolute translate-middle badge rounded-pill bg-danger">
-                                {cart_count}
-                                <span class="visually-hidden">items in cart</span>
-                            </span>
-                        </a>
-                        <Authenticated unauthenticated=move || {
-                            view! {
-                                <LoginLink class="text-muted ms-3 mt-1"><i class="bi bi-box-arrow-right fs-4"></i></LoginLink>
+        <div class="container">
+            <nav class="navbar navbar-expand bg-body-tertiary">
+                <div class="container-fluid">
+                    <a class="navbar-brand me-0" href=env::APP_BACKEND_URL>
+                        <img class="logo" src=make_backend_url(env::APP_LOGO_URL) alt="Logo" title="Nadin" />
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        {
+                            move || match get_category() {
+                                Some(_) => view! {
+                                    <ul class="navbar-nav me-auto">
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                                Категории
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item disabled" aria-disabled="true">{category_name}</a></li>
+                                                <li><hr class="dropdown-divider" /></li>
+                                                <For each=category_children key=|child| child.0 children=move |child| view! {
+                                                    <li><a class="dropdown-item" href=format!("/category/{}", child.0)>{child.1.clone()}</a></li>
+                                                } />
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                }.into_view(),
+                                None => view! {
+                                    <ul class="navbar-nav me-auto">
+                                        <li class="nav-item">
+                                            <a class="nav-link" aria-current="page" href="/">Главная</a>
+                                        </li>
+                                    </ul>
+                                }.into_view()
                             }
-                        }>
-
-                            <div class="dropdown-center">
-                                <button class="btn btn-link text-muted dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-person-circle fs-4"></i>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href=make_backend_url(env::APP_PROFILE_URL)>"Профиль"</a></li>
-                                    <li><LogoutLink class="dropdown-item">"Выйти"</LogoutLink></li>
-                                </ul>
-                            </div>
-
-                        </Authenticated>
-                    </form>
-                </div>
-            </div>
-        </nav>
-        <div class="row justify-content-center">
-            <div class="col-auto">
-                {move || {
-                    tags().into_iter().map(|tag| {
-                        view! {
-                            <a class="badge text-bg-secondary me-1 text-decoration-none" href={format!("/category/{}/tag/{}", category_id(), tag)}>{tag}</a>
                         }
-                    }).collect_view()
-                }}
+                        <form class="d-flex w-100" role="search" action="/search">
+                            <div class="input-group me-2">
+                                <input name="q" class="form-control" type="search" placeholder="Поиск" aria-label="Search" />
+                                <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
+                            </div>
+                            <a class="text-muted nav-link" href="#" data-bs-toggle="modal" data-bs-target="#cartModal">
+                                <i class="bi bi-cart fs-4"></i>
+                                <span class="position-absolute translate-middle badge rounded-pill bg-danger">
+                                    {cart_count}
+                                    <span class="visually-hidden">items in cart</span>
+                                </span>
+                            </a>
+                            <Authenticated unauthenticated=move || {
+                                view! {
+                                    <LoginLink class="nav-link text-muted ms-3"><i class="bi bi-box-arrow-right fs-4"></i></LoginLink>
+                                }
+                            }>
+
+                                <div class="dropdown-center">
+                                    <button class="btn btn-link nav-link align-items-center ms-3 text-muted dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-person-circle fs-4"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" href=make_backend_url(env::APP_PROFILE_URL)>"Профиль"</a></li>
+                                        <li><LogoutLink class="dropdown-item">"Выйти"</LogoutLink></li>
+                                    </ul>
+                                </div>
+
+                            </Authenticated>
+                        </form>
+                    </div>
+                </div>
+            </nav>
+            <div class="row justify-content-center">
+                <div class="col-auto">
+                    {move || {
+                        tags().into_iter().map(|tag| {
+                            view! {
+                                <a class="badge text-bg-secondary me-1 text-decoration-none" href={format!("/category/{}/tag/{}", category_id(), tag)}>{tag}</a>
+                            }
+                        }).collect_view()
+                    }}
+                </div>
             </div>
         </div>
     }
