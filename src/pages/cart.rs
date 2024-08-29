@@ -67,7 +67,7 @@ pub fn CartModal() -> impl IntoView {
                                 <div class="row my-1">
                                     <label for="shoppingCartEmail" class="col-sm-3 col-form-label">"Электронный адрес:"</label>
                                     <div class="col-sm-9">
-                                        <input name="email" readonly type="text" class="form-control-plaintext" id="shoppingCartEmail" placeholder="<не авторизован>" prop:value=user_email />
+                                        <input required name="email" readonly type="text" class="form-control-plaintext" id="shoppingCartEmail" placeholder="<не авторизован>" prop:value=user_email />
                                     </div>
                                 </div>
                                 <div class="row my-1">
