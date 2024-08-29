@@ -40,7 +40,7 @@ pub fn Navbar() -> impl IntoView {
 
     view! {
         <div class="container">
-            <nav class="navbar navbar-expand bg-body-tertiary">
+            <nav class="navbar navbar-expand-sm bg-body-tertiary">
                 <div class="container-fluid">
                     <a class="navbar-brand me-0" href=env::APP_BACKEND_URL>
                         <img class="logo" src=make_backend_url(env::APP_LOGO_URL) alt="Logo" title="Nadin" />
@@ -79,47 +79,46 @@ pub fn Navbar() -> impl IntoView {
                                 }.into_view()
                             }
                         }
+
                         <form class="d-flex w-100" role="search" action="/search">
                             <div class="input-group me-2">
                                 <input name="q" class="form-control" type="search" placeholder="Поиск" aria-label="Search" />
                                 <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
                             </div>
-                            <a class="text-muted nav-link" href="#" data-bs-toggle="modal" data-bs-target="#cartModal">
-                                <i class="bi bi-cart fs-4"></i>
-                                <span class="position-absolute translate-middle badge rounded-pill bg-danger">
-                                    {cart_count}
-                                    <span class="visually-hidden">items in cart</span>
-                                </span>
-                            </a>
-                            <Authenticated unauthenticated=move || {
-                                view! {
-                                    <LoginLink class="nav-link text-muted ms-3"><i class="bi bi-door-open fs-4"></i></LoginLink>
-                                }
-                            }>
-
-                                <div class="dropdown-center">
-                                    <button class="btn btn-link nav-link align-items-center ms-3 text-muted dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bi bi-person-circle fs-4"></i>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        <li>
-                                            <a class="dropdown-item icon-link" href=make_backend_url(env::APP_PROFILE_URL)>
-                                                <i class="bi bi-person mb-2"></i>
-                                                "Профиль"
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <LogoutLink class="dropdown-item icon-link">
-                                                <i class="bi bi-box-arrow-right mb-2"></i>
-                                                "Выйти"
-                                            </LogoutLink>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                            </Authenticated>
                         </form>
                     </div>
+                    <a class="text-muted nav-link" href="#" data-bs-toggle="modal" data-bs-target="#cartModal">
+                        <i class="bi bi-cart fs-4"></i>
+                        <span class="position-absolute translate-middle badge rounded-pill bg-danger">
+                            {cart_count}
+                            <span class="visually-hidden">items in cart</span>
+                        </span>
+                    </a>
+                    <Authenticated unauthenticated=move || {
+                        view! {
+                            <LoginLink class="nav-link text-muted ms-3"><i class="bi bi-door-open fs-4"></i></LoginLink>
+                        }
+                    }>
+                        <div class="dropdown-center">
+                            <button class="btn btn-link nav-link align-items-center ms-3 text-muted dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle fs-4"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item icon-link" href=make_backend_url(env::APP_PROFILE_URL)>
+                                        <i class="bi bi-person mb-2"></i>
+                                        "Профиль"
+                                    </a>
+                                </li>
+                                <li>
+                                    <LogoutLink class="dropdown-item icon-link">
+                                        <i class="bi bi-box-arrow-right mb-2"></i>
+                                        "Выйти"
+                                    </LogoutLink>
+                                </li>
+                            </ul>
+                        </div>
+                    </Authenticated>
                 </div>
             </nav>
             <div class="row justify-content-center">
