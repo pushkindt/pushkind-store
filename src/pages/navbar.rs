@@ -90,7 +90,10 @@ pub fn Navbar() -> impl IntoView {
                     <a class="text-muted nav-link" href="#" data-bs-toggle="modal" data-bs-target="#cartModal">
                         <i class="bi bi-cart fs-4"></i>
                         <span class="position-absolute translate-middle badge rounded-pill bg-danger">
-                            {cart_count}
+                            {move || match cart_count () {
+                                count if count > 9 => "9+".to_string(),
+                                count => format!("{}", count),
+                            }}
                             <span class="visually-hidden">items in cart</span>
                         </span>
                     </a>
