@@ -99,7 +99,7 @@ pub fn Navbar() -> impl IntoView {
                     </a>
                     <Authenticated unauthenticated=move || {
                         view! {
-                            <LoginLink class="nav-link text-muted ms-3"><i class="bi bi-door-open fs-4"></i></LoginLink>
+                            <LoginLink class="nav-link text-muted ms-3">"Войти"</LoginLink>
                         }
                     }>
                         <div class="dropdown-center">
