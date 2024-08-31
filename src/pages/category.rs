@@ -12,7 +12,7 @@ struct CategoryPageParams {
 
 #[derive(Params, PartialEq)]
 struct CategoryPageQuery {
-    page: u32,
+    page: Option<u32>,
 }
 
 #[component]
@@ -29,10 +29,14 @@ pub fn CategoryPage() -> impl IntoView {
                 .unwrap_or(None)
         })
     };
-    let page = move || query.with(|query| query.as_ref().map(|query| query.page).unwrap_or(1));
-    let products_query_params = move || (cat_id(), page(), tag());
+    let page =
+        move || query.with(|query| query.as_ref().map(|query| query.page).unwrap_or(Some(1)));
+
+    let (get_sort_by, set_sort_by) = create_signal("name_asc".to_string());
+
+    let products_query_params = move || (cat_id(), page(), tag(), get_sort_by());
     let products = create_resource(products_query_params, |value| async move {
-        Products::load(value.0, value.1, &value.2).await
+        Products::load(value.0, value.1, &value.2, &Some(value.3)).await
     });
     let products = move || match products.get() {
         None => Some(Products::default()),
@@ -63,27 +67,55 @@ pub fn CategoryPage() -> impl IntoView {
 
     view! {
         <div class="container">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="/">"Главная"</a></li>
-                    {
-                        move || {
-                            match category_name() {
-                                None => view! {  }.into_view(),
-                                Some(category_name) => view! { <li class="breadcrumb-item active" aria-current="page">"Категория: "<a href=format!("/category/{}", cat_id())>{category_name}</a></li> }.into_view(),
+            <div class="row my-1">
+                <div class="col">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/">"Главная"</a></li>
+                            {
+                                move || {
+                                    match category_name() {
+                                        None => view! {  }.into_view(),
+                                        Some(category_name) => view! { <li class="breadcrumb-item active" aria-current="page">"Категория: "<a href=format!("/category/{}", cat_id())>{category_name}</a></li> }.into_view(),
+                                    }
+                                }
                             }
+                            {
+                                move || {
+                                    match tag() {
+                                        None => view! {  }.into_view(),
+                                        Some(tag_name) => view! { <li class="breadcrumb-item active" aria-current="page">"Тег: "{tag_name}</li> }.into_view(),
+                                    }
+                                }
+                            }
+                        </ol>
+                    </nav>
+                </div>
+                {
+                    move || {
+                        if cat_id() != 0 {
+                            view! {
+                                <div class="col col-md-2 text-end">
+                                    <select name="sort_by" class="form-select" aria-label="Сортировка"
+                                        on:change=move |ev| {
+                                            let new_value = event_target_value(&ev);
+                                            set_sort_by(new_value);
+                                        }
+                                        prop:value=move || get_sort_by.get().to_string()
+                                    >
+                                        <option value="name_asc">"↑ Название"</option>
+                                        <option value="name_desc">"↓ Название"</option>
+                                        <option value="price_asc">"↑ Цена"</option>
+                                        <option value="price_desc">"↓ Цена"</option>
+                                    </select>
+                                </div>
+                            }.into_view()
+                        } else {
+                            view! {  }.into_view()
                         }
                     }
-                    {
-                        move || {
-                            match tag() {
-                                None => view! {  }.into_view(),
-                                Some(tag_name) => view! { <li class="breadcrumb-item active" aria-current="page">"Тег: "{tag_name}</li> }.into_view(),
-                            }
-                        }
-                    }
-                </ol>
-            </nav>
+                }
+            </div>
             <ProductCards products=products />
         </div>
     }

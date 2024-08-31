@@ -5,6 +5,8 @@ use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
 
+use leptos_oidc::utils::ParamBuilder;
+
 #[allow(non_camel_case_types)]
 #[derive(Debug, Serialize, Deserialize, Clone, Eq, Hash, PartialEq)]
 pub enum PriceLevel {
@@ -87,21 +89,42 @@ impl Products {
         }
     }
 
-    pub async fn load(cat_id: u32, page: u32, tag: &Option<String>) -> Option<Products> {
+    pub async fn load(
+        cat_id: u32,
+        page: Option<u32>,
+        tag: &Option<String>,
+        sort_by: &Option<String>,
+    ) -> Option<Products> {
+        let url = format!("api/category/{}/products", cat_id);
+
         let url = if let Some(tag) = tag {
-            make_backend_url(&format!(
-                "api/category/{}/products?page={}&tag={}",
-                cat_id, page, tag
-            ))
+            url.push_param_query("tag", tag)
         } else {
-            make_backend_url(&format!("api/category/{}/products?page={}", cat_id, page))
+            url
         };
+        let url = if let Some(page) = page {
+            url.push_param_query("page", page.to_string())
+        } else {
+            url
+        };
+        let url = if let Some(sort_by) = sort_by {
+            url.push_param_query("sort_by", sort_by)
+        } else {
+            url
+        };
+
+        let url = make_backend_url(&url);
 
         Products::load_from_url(&url).await
     }
 
-    pub async fn search(key: &str, page: u32) -> Option<Products> {
-        let url = make_backend_url(&format!("api/products/search?q={}&page={}", key, page));
+    pub async fn search(key: &str, page: Option<u32>) -> Option<Products> {
+        let page = match page {
+            Some(page) => format!("&page={}", page),
+            None => "".to_string(),
+        };
+
+        let url = make_backend_url(&format!("api/products/search?q={}{}", key, page));
         Products::load_from_url(&url).await
     }
 }
