@@ -97,14 +97,29 @@ pub fn ProductModal() -> impl IntoView {
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-sm">
-                                    <div id="carouselImages" class="carousel slide">
+                                    <div id="carouselImages" class="carousel slide" data-bs-theme="dark">
                                         <div class="carousel-inner">
                                             <div class="carousel-item active">
                                                 <img src=product_image class="d-block w-100" alt="Product Image" />
                                             </div>
-                                            <div class="carousel-item">
-                                                <img src=product_image class="d-block w-100" alt="Product Image" />
-                                            </div>
+                                            {
+                                                move || match get_product() {
+                                                    None => view! {}.into_view(),
+                                                    Some(product) => match product.images {
+                                                        None => view! {}.into_view(),
+                                                        Some(images) => images
+                                                            .iter()
+                                                            .map(|image| {
+                                                                view! {
+                                                                    <div class="carousel-item">
+                                                                        <img src=image class="d-block w-100" alt="Media Image" />
+                                                                    </div>
+                                                                }
+                                                            })
+                                                            .collect_view(),
+                                                    },
+                                                }
+                                            }
                                         </div>
                                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselImages" data-bs-slide="prev">
                                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -262,10 +277,10 @@ fn ProductCard(product: Product, #[prop(into)] price_level: Signal<PriceLevel>) 
             <div class="card text-center selectable overflow-hidden h-100" data-bs-toggle="modal" data-bs-target="#productModal" on:click=move |_| {set_product(Some(product.clone()))}>
                 <img class="card-img-top" src=product_image alt="thumbnail" />
                 <div class="card-body py-0">
-                    <h5 class="card-title text-start">{move || format!("{:.2}", product_price() )}"₽"</h5>
                 </div>
                 <div class="card-footer bg-white border-top-0 text-start">
                     {product_name}
+                    <h5 class="card-title text-start">{move || format!("{:.2}", product_price() )}"₽"</h5>
                 </div>
             </div>
         </div>

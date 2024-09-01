@@ -43,6 +43,7 @@ pub struct Product {
     pub description: Option<String>,
     pub options: Option<HashMap<String, Vec<String>>>,
     pub tags: Option<Vec<String>>,
+    pub images: Option<Vec<String>>,
 }
 
 impl Product {
