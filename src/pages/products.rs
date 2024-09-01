@@ -99,9 +99,14 @@ pub fn ProductModal() -> impl IntoView {
                                 <div class="col-sm">
                                     <div id="carouselImages" class="carousel slide" data-bs-theme="dark">
                                         <div class="carousel-inner">
-                                            <div class="carousel-item active">
-                                                <img src=product_image class="d-block w-100" alt="Product Image" />
-                                            </div>
+                                            {
+                                                move || view! {
+                                                    <div class="carousel-item active">
+                                                        <img src=product_image() class="d-block w-100" alt="Product Image" />
+                                                    </div>
+                                                }
+                                            }
+
                                             {
                                                 move || match get_product() {
                                                     None => view! {}.into_view(),
