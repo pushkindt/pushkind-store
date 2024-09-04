@@ -9,6 +9,7 @@ pub struct User {
     pub name: String,
     pub price_level: PriceLevel,
     pub email: String,
+    pub phone: Option<String>,
 }
 
 impl User {

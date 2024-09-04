@@ -32,6 +32,7 @@ pub fn CartModal() -> impl IntoView {
     let price_level = move || get_user().price_level;
 
     let user_email = move || get_user().email.clone();
+    let user_phone = move || get_user().phone.clone().unwrap_or_default();
 
     // let on_submit = move |_| {
     //     set_cart.update(|cart| {
@@ -64,13 +65,19 @@ pub fn CartModal() -> impl IntoView {
 
                             <form method="POST" action=make_backend_url(env::APP_CART_URL) enctype="multipart/form-data">
 
-                                <div class="row my-1">
+                                <div class="row">
                                     <label for="shoppingCartEmail" class="col-sm-3 col-form-label">"Электронный адрес:"</label>
                                     <div class="col-sm-9">
                                         <input required name="email" readonly type="text" class="form-control-plaintext" id="shoppingCartEmail" placeholder="<не авторизован>" prop:value=user_email />
                                     </div>
                                 </div>
-                                <div class="row my-1">
+                                <div class="row">
+                                    <label for="shoppingCartPhone" class="col-sm-3 col-form-label">"Телефон:"</label>
+                                    <div class="col-sm-9">
+                                        <input readonly type="text" class="form-control-plaintext" id="shoppingCartPhone" placeholder="<не авторизован>" prop:value=user_phone />
+                                    </div>
+                                </div>
+                                <div class="row">
                                     <label for="shoppingCartPriceLevel" class="col-sm-3 col-form-label">"Уровень цен:"</label>
                                     <div class="col-sm-9">
                                         <input readonly type="text" class="form-control-plaintext" id="shoppingCartPriceLevel" prop:value={move||price_level().to_string()} />
@@ -78,14 +85,14 @@ pub fn CartModal() -> impl IntoView {
                                     </div>
                                 </div>
 
-                                <div class="row my-1">
+                                <div class="row">
                                     <div class="col">
                                         <textarea name="comment" class="form-control" rows="3" placeholder="Комментарий к заказу" maxlength="256">
                                         </textarea>
                                     </div>
                                 </div>
                                 <div class="row my-1">
-                                    <div class="col">
+                                    <div class="col text-end">
                                         <input type="hidden" name="cart" prop:value=cart_json_string />
                                         <Authenticated unauthenticated=move || {
                                             view! {
@@ -97,7 +104,7 @@ pub fn CartModal() -> impl IntoView {
                                             }
                                         }>
                                             <button type="submit" class="btn btn-primary">
-                                                "Заказать"
+                                                "Оформить заказ"
                                             </button>
                                         </Authenticated>
                                     </div>
@@ -140,13 +147,18 @@ fn CartLineItem(item: CartItem, #[prop(into)] price_level: Signal<PriceLevel>) -
             </div>
             <div class="col-sm">
                 <div class="row">
-                    <div class="col">
+                    <div class="col text-end">
+                        <span class="link-primary">"изменить"</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col text-end">
                         {item_quantity}" "{product_measurement}" по "{move || format!("{:.2}", product_price() )}"₽"
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
-                        <span class="fw-bold">"Комментарий: "</span>{item_comment}
+                        {item_comment}
                     </div>
                 </div>
             </div>
