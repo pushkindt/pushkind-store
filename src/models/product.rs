@@ -16,8 +16,12 @@ pub enum PriceLevel {
     large_wholesale = 3,
     distributor = 4,
     exclusive = 5,
-    retail = 6,
-    retail_promo = 7,
+    chains_vat = 6,
+    chains_vat_promo = 7,
+    chains_no_vat = 8,
+    chains_no_vat_promo = 9,
+    msrp_chains = 10,
+    msrp_retail = 11,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default, PartialEq)]
@@ -160,8 +164,12 @@ impl PriceLevel {
             PriceLevel::large_wholesale => "КРУПНЫЙ ОПТ",
             PriceLevel::distributor => "ДИСТРИБЬЮТОР",
             PriceLevel::exclusive => "ЭКСКЛЮЗИВ",
-            PriceLevel::retail => "СЕТИ",
-            PriceLevel::retail_promo => "СЕТИ ПРОМО",
+            PriceLevel::chains_vat => "СЕТИ С НДС",
+            PriceLevel::chains_vat_promo => "СЕТИ С НДС ПРОМО",
+            PriceLevel::chains_no_vat => "СЕТИ БЕЗ НДС",
+            PriceLevel::chains_no_vat_promo => "СЕТИ БЕЗ НДС ПРОМО",
+            PriceLevel::msrp_chains => "РРЦ СЕТИ",
+            PriceLevel::msrp_retail => "РРЦ РОЗНИЦА",
         }
         .to_string()
     }
