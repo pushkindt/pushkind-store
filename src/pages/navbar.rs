@@ -29,7 +29,11 @@ pub fn Navbar() -> impl IntoView {
 
     let cart_count = move || get_cart().items.len();
 
-    let tags = create_resource(|| (), |_| async move { load_tags().await });
+    let access_token = expect_context::<ReadSignal<Option<String>>>();
+
+    let tags = create_resource(access_token, move |access_token| async move {
+        load_tags(&access_token).await
+    });
     let tags = move || match tags.get() {
         None => vec![],
         Some(tags) => match tags {
@@ -58,7 +62,7 @@ pub fn Navbar() -> impl IntoView {
                                         <li class="nav-item dropdown">
                                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                                                 aria-expanded="false">
-                                                Категории
+                                                "Категории"
                                             </a>
                                             <ul class="dropdown-menu">
                                                 <li><a class="dropdown-item disabled" aria-disabled="true">{category_name}</a></li>

@@ -3,11 +3,12 @@ use crate::models::product::PriceLevel;
 use leptos_oidc::{Algorithm, Auth};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize, Clone, Eq, PartialEq, Default)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Default)]
 pub struct User {
     pub sub: String,
     pub name: String,
     pub price_level: PriceLevel,
+    pub discount: f32,
     pub email: String,
     pub phone: Option<String>,
 }

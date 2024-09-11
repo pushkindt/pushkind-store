@@ -18,7 +18,10 @@ pub fn CartModal() -> impl IntoView {
 
     let cart_sum = move || {
         get_cart().items.values().fold(0.0, |acc, item| {
-            acc + item.product.get_price(&get_user().price_level) * item.quantity as f32
+            acc + item
+                .product
+                .get_price(&get_user().price_level, get_user().discount)
+                * item.quantity as f32
         })
     };
 
@@ -30,6 +33,7 @@ pub fn CartModal() -> impl IntoView {
     let cart_items = move || get_cart().items.values().cloned().collect::<Vec<_>>();
 
     let price_level = move || get_user().price_level;
+    let discount = move || get_user().discount;
 
     let user_email = move || get_user().email.clone();
     let user_phone = move || get_user().phone.clone().unwrap_or_default();
@@ -58,7 +62,7 @@ pub fn CartModal() -> impl IntoView {
 
                             { move || {
                                     cart_items().into_iter()
-                                    .map(|item| view! { <CartLineItem item=item price_level=Signal::derive(price_level) /> })
+                                    .map(|item| view! { <CartLineItem item=item price_level=Signal::derive(price_level) discount=Signal::derive(discount) /> })
                                     .collect_view()
                                 }
                             }
@@ -84,7 +88,12 @@ pub fn CartModal() -> impl IntoView {
                                         <input name="price_level" type="hidden" prop:value={move||price_level() as u8} />
                                     </div>
                                 </div>
-
+                                <div class="row">
+                                    <label for="shoppingCartDiscount" class="col-sm-3 col-form-label">"Cкидка (%):"</label>
+                                    <div class="col-sm-9">
+                                        <input readonly type="text" class="form-control-plaintext" id="shoppingCartDiscount" prop:value={move||format!("{:.2}%", discount())} />
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="col">
                                         <textarea name="comment" class="form-control" rows="3" placeholder="Комментарий к заказу" maxlength="256">
@@ -119,13 +128,17 @@ pub fn CartModal() -> impl IntoView {
 }
 
 #[component]
-fn CartLineItem(item: CartItem, #[prop(into)] price_level: Signal<PriceLevel>) -> impl IntoView {
+fn CartLineItem(
+    item: CartItem,
+    #[prop(into)] price_level: Signal<PriceLevel>,
+    discount: Signal<f32>,
+) -> impl IntoView {
     let set_product = expect_context::<WriteSignal<Option<Product>>>();
 
     let product_clone = item.product.clone();
 
     let product_image = item.product.get_image();
-    let product_price = move || product_clone.get_price(&price_level());
+    let product_price = move || product_clone.get_price(&price_level(), discount());
     let product_name = item.product.name.clone();
     let product_sku = item.product.sku.clone();
     let product_measurement = item.product.measurement.clone().unwrap_or_default();

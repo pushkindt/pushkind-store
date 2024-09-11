@@ -10,9 +10,16 @@ pub struct Category {
 }
 
 impl Category {
-    pub async fn load(root: u32) -> Option<Category> {
+    pub async fn load(root: u32, access_token: &Option<String>) -> Option<Category> {
         let url = make_backend_url(&format!("api/category/{}", root));
-        let response = match reqwest::get(url).await {
+
+        let client = reqwest::Client::new();
+        let request = match access_token {
+            Some(token) => client.get(url).bearer_auth(token),
+            None => client.get(url),
+        };
+
+        let response = match request.send().await {
             Ok(response) => response,
             Err(_) => return None,
         };

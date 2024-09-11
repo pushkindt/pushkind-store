@@ -24,11 +24,14 @@ pub fn SearchPage() -> impl IntoView {
         })
     };
 
-    let search_page = move || (search(), page());
+    let access_token = expect_context::<ReadSignal<Option<String>>>();
 
-    let products = create_resource(search_page, |value| async move {
-        Products::search(&value.0, value.1).await
-    });
+    let fetch_products_params = move || (search(), page(), access_token());
+
+    let products = create_resource(
+        fetch_products_params,
+        |(key, page, access_token)| async move { Products::search(&key, page, &access_token).await },
+    );
 
     let products = move || match products.get() {
         None => Some(Products::default()),

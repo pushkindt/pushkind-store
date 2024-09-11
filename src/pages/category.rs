@@ -34,17 +34,26 @@ pub fn CategoryPage() -> impl IntoView {
 
     let (get_sort_by, set_sort_by) = create_signal("name_asc".to_string());
 
-    let products_query_params = move || (cat_id(), page(), tag(), get_sort_by());
-    let products = create_resource(products_query_params, |value| async move {
-        Products::load(value.0, value.1, &value.2, &Some(value.3)).await
-    });
+    let access_token = expect_context::<ReadSignal<Option<String>>>();
+
+    let fetch_products_params = move || (cat_id(), page(), tag(), get_sort_by(), access_token());
+    let products = create_resource(
+        fetch_products_params,
+        |(cat_id, page, tag, sort_by, access_token)| async move {
+            Products::load(cat_id, page, &tag, &Some(sort_by), &access_token).await
+        },
+    );
     let products = move || match products.get() {
         None => Some(Products::default()),
         Some(products) => products,
     };
 
     let set_category = expect_context::<WriteSignal<Option<Category>>>();
-    let category = create_resource(cat_id, |value| async move { Category::load(value).await });
+
+    let fetch_category_params = move || (cat_id(), access_token());
+    let category = create_resource(fetch_category_params, |(cat_id, access_token)| async move {
+        Category::load(cat_id, &access_token).await
+    });
 
     let category = move || match category.get() {
         None => None,

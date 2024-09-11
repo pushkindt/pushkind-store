@@ -47,10 +47,10 @@ pub struct Product {
 }
 
 impl Product {
-    pub fn get_price(&self, price_level: &PriceLevel) -> f32 {
+    pub fn get_price(&self, price_level: &PriceLevel, discount: f32) -> f32 {
         match &self.prices {
             Some(prices) => match prices.get(price_level) {
-                Some(price) => *price,
+                Some(price) => (*price * (1.0 - discount / 100.0)).max(0.0),
                 None => self.price,
             },
             None => self.price,
@@ -65,9 +65,14 @@ impl Product {
         make_backend_url(image)
     }
 
-    pub async fn load(id: u32) -> Option<Product> {
+    pub async fn load(id: u32, access_token: Option<String>) -> Option<Product> {
         let url = make_backend_url(&format!("api/product/{}", id));
-        let response = match reqwest::get(url).await {
+        let client = reqwest::Client::new();
+        let request = match access_token {
+            Some(token) => client.get(url).bearer_auth(token),
+            None => client.get(url),
+        };
+        let response = match request.send().await {
             Ok(response) => response,
             Err(_) => return None,
         };
@@ -79,8 +84,13 @@ impl Product {
 }
 
 impl Products {
-    async fn load_from_url(url: &str) -> Option<Products> {
-        let response = match reqwest::get(url).await {
+    async fn load_from_url(url: &str, access_token: &Option<String>) -> Option<Products> {
+        let client = reqwest::Client::new();
+        let request = match access_token {
+            Some(token) => client.get(url).bearer_auth(token),
+            None => client.get(url),
+        };
+        let response = match request.send().await {
             Ok(response) => response,
             Err(_) => return None,
         };
@@ -95,6 +105,7 @@ impl Products {
         page: Option<u32>,
         tag: &Option<String>,
         sort_by: &Option<String>,
+        access_token: &Option<String>,
     ) -> Option<Products> {
         let url = format!("api/category/{}/products", cat_id);
 
@@ -116,17 +127,21 @@ impl Products {
 
         let url = make_backend_url(&url);
 
-        Products::load_from_url(&url).await
+        Products::load_from_url(&url, access_token).await
     }
 
-    pub async fn search(key: &str, page: Option<u32>) -> Option<Products> {
+    pub async fn search(
+        key: &str,
+        page: Option<u32>,
+        access_token: &Option<String>,
+    ) -> Option<Products> {
         let page = match page {
             Some(page) => format!("&page={}", page),
             None => "".to_string(),
         };
 
         let url = make_backend_url(&format!("api/products/search?q={}{}", key, page));
-        Products::load_from_url(&url).await
+        Products::load_from_url(&url, access_token).await
     }
 }
 

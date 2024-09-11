@@ -50,8 +50,10 @@ pub fn AppWithRouter() -> impl IntoView {
     };
     let auth = Auth::init(auth_parameters);
     let (get_user, set_user) = create_signal(User::from_auth(&auth));
+    let (get_access_token, set_access_token) = create_signal(None::<String>);
 
     provide_context(get_user);
+    provide_context(get_access_token);
 
     view! {
         <Navbar />
@@ -59,8 +61,12 @@ pub fn AppWithRouter() -> impl IntoView {
         <CartModal />
         <Authenticated unauthenticated=move || {
             set_user.update(|user| *user = User::default());
+            set_access_token.update(|access_token| *access_token = None::<String>);
         }>
-            {set_user.update(|user| *user = User::from_auth(&auth))}
+            {
+                set_user.update(|user| *user = User::from_auth(&auth));
+                set_access_token.update(|access_token| *access_token = auth.access_token());
+            }
         </Authenticated>
         <Routes>
             <Route path="/" view=move || view! { <CategoryPage /> }/>
