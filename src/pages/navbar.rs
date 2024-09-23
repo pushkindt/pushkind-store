@@ -36,10 +36,7 @@ pub fn Navbar() -> impl IntoView {
     });
     let tags = move || match tags.get() {
         None => vec![],
-        Some(tags) => match tags {
-            None => vec![],
-            Some(tags) => tags,
-        },
+        Some(tags) => tags.unwrap_or_default(),
     };
 
     view! {

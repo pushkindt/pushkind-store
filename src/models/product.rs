@@ -2,14 +2,16 @@ use crate::env;
 use crate::utils::make_backend_url;
 use reqwest;
 use std::collections::HashMap;
+use std::fmt;
 
 use serde::{Deserialize, Serialize};
 
 use leptos_oidc::utils::ParamBuilder;
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, Serialize, Deserialize, Clone, Eq, Hash, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, Clone, Eq, Hash, PartialEq, Default)]
 pub enum PriceLevel {
+    #[default]
     online_store = 0,
     marketplace = 1,
     small_wholesale = 2,
@@ -80,10 +82,7 @@ impl Product {
             Ok(response) => response,
             Err(_) => return None,
         };
-        match response.json().await {
-            Ok(product) => product,
-            Err(_) => None,
-        }
+        (response.json().await).unwrap_or_default()
     }
 }
 
@@ -98,10 +97,7 @@ impl Products {
             Ok(response) => response,
             Err(_) => return None,
         };
-        match response.json().await {
-            Ok(products) => products,
-            Err(_) => None,
-        }
+        (response.json().await).unwrap_or_default()
     }
 
     pub async fn load(
@@ -149,15 +145,9 @@ impl Products {
     }
 }
 
-impl Default for PriceLevel {
-    fn default() -> Self {
-        PriceLevel::online_store
-    }
-}
-
-impl PriceLevel {
-    pub fn to_string(&self) -> String {
-        match self {
+impl fmt::Display for PriceLevel {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let repr = match self {
             PriceLevel::online_store => "ИНТЕРНЕТ",
             PriceLevel::marketplace => "МАРКЕТ",
             PriceLevel::small_wholesale => "МЕЛКИЙ ОПТ",
@@ -170,7 +160,7 @@ impl PriceLevel {
             PriceLevel::chains_no_vat_promo => "СЕТИ БЕЗ НДС ПРОМО",
             PriceLevel::msrp_chains => "РРЦ СЕТИ",
             PriceLevel::msrp_retail => "РРЦ РОЗНИЦА",
-        }
-        .to_string()
+        };
+        write!(f, "{}", repr)
     }
 }

@@ -80,7 +80,7 @@ pub fn ProductModal() -> impl IntoView {
                 }
                 let item = CartItem {
                     product: product.clone(),
-                    quantity: quantity,
+                    quantity,
                     comment: Some(comment),
                 };
                 cart.items.insert(product.id, item);
@@ -197,7 +197,7 @@ fn ProductPagination(#[prop(into)] products: Signal<Option<Products>>) -> impl I
     let mut query = use_query_map().get_untracked();
     query.remove("page");
     let mut query_string = query.to_query_string();
-    if query_string.len() == 0 {
+    if query_string.is_empty() {
         query_string.insert(0, '?');
     } else {
         query_string.push('&');

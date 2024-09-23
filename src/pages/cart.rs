@@ -84,7 +84,7 @@ pub fn CartModal() -> impl IntoView {
                                 <div class="row">
                                     <label for="shoppingCartPriceLevel" class="col-sm-3 col-form-label">"Уровень цен:"</label>
                                     <div class="col-sm-9">
-                                        <input readonly type="text" class="form-control-plaintext" id="shoppingCartPriceLevel" prop:value={move||price_level().to_string()} />
+                                        <input readonly type="text" class="form-control-plaintext" id="shoppingCartPriceLevel" prop:value={move||format!("{}", price_level())} />
                                         <input name="price_level" type="hidden" prop:value={move||price_level() as u8} />
                                     </div>
                                 </div>

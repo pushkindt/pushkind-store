@@ -56,14 +56,11 @@ pub fn CategoryPage() -> impl IntoView {
     });
 
     let category = move || match category.get() {
-        None => None,
-        Some(category) => match category {
-            None => None,
-            Some(category) => {
-                set_category(Some(category.clone()));
-                Some(category)
-            }
-        },
+        Some(Some(category)) => {
+            set_category(Some(category.clone()));
+            Some(category)
+        }
+        _ => None,
     };
 
     let category_name = move || match category() {
