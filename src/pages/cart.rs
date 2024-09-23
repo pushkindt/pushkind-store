@@ -101,13 +101,13 @@ pub fn CartModal() -> impl IntoView {
                                     </div>
                                 </div>
                                 <div class="row my-1">
-                                    <div class="col text-end">
+                                    <div class="col text-center">
                                         <input type="hidden" name="cart" prop:value=cart_json_string />
                                         <Authenticated unauthenticated=move || {
                                             view! {
                                                 <div class="alert alert-warning">
                                                     "Необходимо "
-                                                    <LoginLink class="text-muted">"aвторизоваться"</LoginLink>
+                                                    <LoginLink>"Войти"</LoginLink>
                                                     " для оформления заказа."
                                                 </div>
                                             }
