@@ -1,5 +1,5 @@
+use crate::models::cart::{CartItem, ShoppingCart};
 use crate::models::product::{PriceLevel, Product, Products};
-use crate::models::shopping_cart::{CartItem, ShoppingCart};
 use crate::models::user::User;
 use crate::utils::Paginator;
 use leptos::*;

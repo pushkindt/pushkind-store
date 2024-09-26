@@ -1,6 +1,7 @@
+use crate::models::cart::ShoppingCart;
 use crate::models::product::Product;
-use crate::models::shopping_cart::ShoppingCart;
 use crate::models::user::User;
+use crate::pages::alert::Alert;
 use crate::pages::cart::CartModal;
 use crate::pages::category::CategoryPage;
 use crate::pages::navbar::Navbar;
@@ -56,6 +57,7 @@ pub fn AppWithRouter() -> impl IntoView {
     provide_context(get_access_token);
 
     view! {
+        <Alert />
         <Navbar />
         <ProductModal />
         <CartModal />

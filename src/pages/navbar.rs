@@ -1,6 +1,6 @@
 use crate::env;
 use crate::models::category::Category;
-use crate::models::shopping_cart::ShoppingCart;
+use crate::models::cart::ShoppingCart;
 use crate::models::tag::load_tags;
 use crate::utils::make_backend_url;
 use leptos::*;

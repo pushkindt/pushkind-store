@@ -1,3 +1,4 @@
+pub mod alert;
 pub mod cart;
 pub mod category;
 pub mod navbar;

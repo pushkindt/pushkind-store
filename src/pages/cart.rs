@@ -1,48 +1,69 @@
 use crate::env;
+use crate::models::alert::{AlertMessage, AlertType};
+use crate::models::cart::{CartItem, ShoppingCart};
 use crate::models::product::{PriceLevel, Product};
-use crate::models::shopping_cart::{CartItem, ShoppingCart};
 use crate::models::user::User;
-use crate::utils::make_backend_url;
 use leptos::*;
 use leptos_oidc::{Authenticated, LoginLink};
+use leptos_use::use_window;
+use std::time::Duration;
+use web_sys::window;
 
 #[component]
 pub fn CartModal() -> impl IntoView {
     let get_cart = expect_context::<Signal<ShoppingCart>>();
 
-    // let set_cart = expect_context::<WriteSignal<ShoppingCart>>();
-
     let get_user = expect_context::<ReadSignal<User>>();
+    let set_cart = expect_context::<WriteSignal<ShoppingCart>>();
+    let set_alert = expect_context::<WriteSignal<AlertMessage>>();
 
-    let cart_count = move || get_cart().items.len();
-
-    let cart_sum = move || {
-        get_cart().items.values().fold(0.0, |acc, item| {
-            acc + item
-                .product
-                .get_price(&get_user().price_level, get_user().discount)
-                * item.quantity as f32
-        })
-    };
-
-    let cart_json_string = move || {
-        let cart = get_cart();
-        serde_json::to_string(&cart).unwrap()
-    };
-
-    let cart_items = move || get_cart().items.values().cloned().collect::<Vec<_>>();
+    let cart_count = move || get_cart().get_item_count();
 
     let price_level = move || get_user().price_level;
     let discount = move || get_user().discount;
 
+    let cart_sum = move || get_cart().get_total_price(&price_level(), discount());
+
+    let cart_items = move || get_cart().items.values().cloned().collect::<Vec<_>>();
+
     let user_email = move || get_user().email.clone();
     let user_phone = move || get_user().phone.clone().unwrap_or_default();
 
-    // let on_submit = move |_| {
-    //     set_cart.update(|cart| {
-    //         cart.items.clear();
-    //     });
-    // };
+    let access_token = expect_context::<ReadSignal<Option<String>>>();
+    let on_submit = move |ev: leptos::ev::MouseEvent| {
+        ev.prevent_default();
+        spawn_local(async move {
+            match get_cart().submit(&access_token()).await {
+                Ok(_) => {
+                    set_cart.update(|cart| {
+                        cart.clear();
+                        cart.comment = None;
+                    });
+                    set_alert.set(AlertMessage {
+                        message: "Заказ оформлен. Вы будете перенаправлены в личный кабинет."
+                            .to_string(),
+                        alert_type: AlertType::Success,
+                        visible: true,
+                    });
+                    set_timeout(
+                        || {
+                            if let Some(window) = window() {
+                                window.location().set_href(env::APP_BACKEND_URL).unwrap();
+                            };
+                        },
+                        Duration::new(2, 0),
+                    );
+                }
+                Err(_) => {
+                    set_alert.set(AlertMessage {
+                        message: "Ошибка создания заказа. Попробуйте позже.".to_string(),
+                        alert_type: AlertType::Danger,
+                        visible: true,
+                    });
+                }
+            }
+        })
+    };
 
     view! {
         <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
@@ -66,9 +87,6 @@ pub fn CartModal() -> impl IntoView {
                                     .collect_view()
                                 }
                             }
-
-                            <form method="POST" action=make_backend_url(env::APP_CART_URL) enctype="multipart/form-data">
-
                                 <div class="row">
                                     <label for="shoppingCartEmail" class="col-sm-3 col-form-label">"Электронный адрес:"</label>
                                     <div class="col-sm-9">
@@ -85,7 +103,6 @@ pub fn CartModal() -> impl IntoView {
                                     <label for="shoppingCartPriceLevel" class="col-sm-3 col-form-label">"Уровень цен:"</label>
                                     <div class="col-sm-9">
                                         <input readonly type="text" class="form-control-plaintext" id="shoppingCartPriceLevel" prop:value={move||format!("{}", price_level())} />
-                                        <input name="price_level" type="hidden" prop:value={move||price_level() as u8} />
                                     </div>
                                 </div>
                                 <div class="row">
@@ -96,13 +113,17 @@ pub fn CartModal() -> impl IntoView {
                                 </div>
                                 <div class="row">
                                     <div class="col">
-                                        <textarea name="comment" class="form-control" rows="3" placeholder="Комментарий к заказу" maxlength="256">
+                                        <textarea
+                                            prop:value={move||get_cart().comment.clone().unwrap_or_default()}
+                                            on:input=move |ev| {
+                                                set_cart.update(|cart| cart.comment = Some(event_target_value(&ev)));
+                                            }
+                                            class="form-control" rows="3" placeholder="Комментарий к заказу" maxlength="256">
                                         </textarea>
                                     </div>
                                 </div>
                                 <div class="row my-1">
                                     <div class="col text-center">
-                                        <input type="hidden" name="cart" prop:value=cart_json_string />
                                         <Authenticated unauthenticated=move || {
                                             view! {
                                                 <div class="alert alert-warning">
@@ -112,13 +133,19 @@ pub fn CartModal() -> impl IntoView {
                                                 </div>
                                             }
                                         }>
-                                            <button type="submit" class="btn btn-primary">
+                                            <button
+                                                on:click=on_submit
+                                                disabled={move || cart_count() == 0}
+                                                type="button"
+                                                class="btn btn-primary"
+                                                data-bs-dismiss="modal"
+                                                aria-label="Close"
+                                            >
                                                 "Оформить заказ"
                                             </button>
                                         </Authenticated>
                                     </div>
                                 </div>
-                            </form>
                         </div>
                     </div>
                 </div>
