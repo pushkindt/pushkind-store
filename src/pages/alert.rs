@@ -13,7 +13,7 @@ pub fn Alert() -> impl IntoView {
         let t = alert.get();
         let background_class = format! {"{}", t.alert_type};
 
-        let opacity_class = if t.visible == true {
+        let opacity_class = if t.visible {
             "d-block".to_string()
         } else {
             "d-none".to_string()

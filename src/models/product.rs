@@ -68,7 +68,10 @@ impl Product {
             Some(image) => image,
             None => env::APP_DEFAULT_PRODUCT_IMAGE,
         };
-        match image.starts_with("http") {
+        match image
+            .get(0..4)
+            .map_or(false, |prefix| prefix.eq_ignore_ascii_case("http"))
+        {
             true => image.to_string(),
             false => make_backend_url(image),
         }

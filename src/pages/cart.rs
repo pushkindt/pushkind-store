@@ -5,7 +5,6 @@ use crate::models::product::{PriceLevel, Product};
 use crate::models::user::User;
 use leptos::*;
 use leptos_oidc::{Authenticated, LoginLink};
-use leptos_use::use_window;
 use std::time::Duration;
 use web_sys::window;
 
