@@ -68,7 +68,10 @@ impl Product {
             Some(image) => image,
             None => env::APP_DEFAULT_PRODUCT_IMAGE,
         };
-        make_backend_url(image)
+        match image.starts_with("http") {
+            true => image.to_string(),
+            false => make_backend_url(image),
+        }
     }
 
     pub async fn load(id: u32, access_token: Option<String>) -> Option<Product> {
