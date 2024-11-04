@@ -1,0 +1,49 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: jetli/trunk-action@v0.5.0
+      with:
+        version: 'latest'
+    - name: Install WASM target
+      run: rustup target add wasm32-unknown-unknown
+    - name: Save environment
+      run: |
+        echo APP_BACKEND_URL=${{ vars.APP_BACKEND_URL }} > .env
+        echo APP_CART_URL=${{ vars.APP_CART_URL }} >> .env
+        echo APP_DEFAULT_PRODUCT_IMAGE=${{ vars.APP_DEFAULT_PRODUCT_IMAGE }} >> .env
+        echo APP_SIGNIN_URL=${{ vars.APP_SIGNIN_URL }} >> .env
+        echo APP_SIGNIN_CLIENT=${{ vars.APP_SIGNIN_CLIENT }} >> .env
+        echo APP_SIGNIN_REDIRECT_URL=${{ vars.APP_SIGNIN_REDIRECT_URL }} >> .env
+        echo APP_PROFILE_URL=${{ vars.APP_PROFILE_URL }} >> .env
+        echo APP_TITLE=\"${{ vars.APP_TITLE }}\" >> .env
+        echo APP_LOGO_URL=\"${{ vars.APP_LOGO_URL }}\" >> .env
+        echo APP_HUB_ID=1 >> .env
+    - name: Build
+      run: trunk build --release
+    - name: Install SSH Key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.CICD_PRIVATE_KEY }}
+        name: id_rsa # optional
+        known_hosts: ${{ secrets.CICD_KNOWN_HOSTS }}
+        if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
+    - name: Deploy
+      run: |
+        ssh cicd@map.pushkind.com "rm -rf /var/www/html/pushkind*"
+        scp dist/* cicd@map.pushkind.com:/var/www/html/
+        scp public/* cicd@map.pushkind.com:/var/www/html/

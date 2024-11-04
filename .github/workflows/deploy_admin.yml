@@ -32,6 +32,7 @@ jobs:
         echo APP_PROFILE_URL=${{ vars.APP_PROFILE_URL }} >> .env
         echo APP_TITLE=\"${{ vars.APP_TITLE }}\" >> .env
         echo APP_LOGO_URL=\"${{ vars.APP_LOGO_URL }}\" >> .env
+        echo APP_HUB_ID=2 >> .env
     - name: Build
       run: trunk build --release
     - name: Install SSH Key
@@ -43,5 +44,6 @@ jobs:
         if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
     - name: Deploy
       run: |
-        scp dist/* cicd@map.pushkind.com:/var/www/html/
-        scp public/* cicd@map.pushkind.com:/var/www/html/
+        ssh cicd@map.pushkind.com "rm -rf /var/www2/html/pushkind*"
+        scp dist/* cicd@map.pushkind.com:/var/www2/html/
+        scp public/* cicd@map.pushkind.com:/var/www2/html/
