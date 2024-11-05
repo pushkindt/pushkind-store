@@ -27,7 +27,7 @@ jobs:
         echo APP_CART_URL=${{ vars.APP_CART_URL }} >> .env
         echo APP_DEFAULT_PRODUCT_IMAGE=${{ vars.APP_DEFAULT_PRODUCT_IMAGE }} >> .env
         echo APP_SIGNIN_URL=${{ vars.APP_SIGNIN_URL }} >> .env
-        echo APP_SIGNIN_CLIENT=${{ vars.APP_SIGNIN_CLIENT }} >> .env
+        echo APP_SIGNIN_CLIENT=${{ vars.APP_SIGNIN_CLIENT2 }} >> .env
         echo APP_SIGNIN_REDIRECT_URL=https://admin.pushkind.com/ >> .env
         echo APP_PROFILE_URL=${{ vars.APP_PROFILE_URL }} >> .env
         echo APP_TITLE=\"Магазин Admin\" >> .env
