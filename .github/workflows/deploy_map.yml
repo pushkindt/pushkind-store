@@ -28,10 +28,10 @@ jobs:
         echo APP_DEFAULT_PRODUCT_IMAGE=${{ vars.APP_DEFAULT_PRODUCT_IMAGE }} >> .env
         echo APP_SIGNIN_URL=${{ vars.APP_SIGNIN_URL }} >> .env
         echo APP_SIGNIN_CLIENT=${{ vars.APP_SIGNIN_CLIENT }} >> .env
-        echo APP_SIGNIN_REDIRECT_URL=${{ vars.APP_SIGNIN_REDIRECT_URL }} >> .env
+        echo APP_SIGNIN_REDIRECT_URL=https://map.pushkind.com/ >> .env
         echo APP_PROFILE_URL=${{ vars.APP_PROFILE_URL }} >> .env
         echo APP_TITLE=\"Магазин Map\" >> .env
-        echo APP_LOGO_URL=\"static/upload/logo1.png\" >> .env
+        echo APP_LOGO_URL=static/upload/logo1.png >> .env
         echo APP_HUB_ID=1 >> .env
     - name: Build
       run: trunk build --release
