@@ -1,4 +1,4 @@
-name: Rust
+name: Deploy Admin
 
 on:
   push:
@@ -30,8 +30,8 @@ jobs:
         echo APP_SIGNIN_CLIENT=${{ vars.APP_SIGNIN_CLIENT }} >> .env
         echo APP_SIGNIN_REDIRECT_URL=${{ vars.APP_SIGNIN_REDIRECT_URL }} >> .env
         echo APP_PROFILE_URL=${{ vars.APP_PROFILE_URL }} >> .env
-        echo APP_TITLE=\"${{ vars.APP_TITLE }}\" >> .env
-        echo APP_LOGO_URL=\"${{ vars.APP_LOGO_URL }}\" >> .env
+        echo APP_TITLE=\"Магазин Admin\" >> .env
+        echo APP_LOGO_URL=\"static/upload/logo2.png\" >> .env
         echo APP_HUB_ID=2 >> .env
     - name: Build
       run: trunk build --release
