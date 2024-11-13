@@ -5,8 +5,6 @@ use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-use super::product::PriceLevel;
-
 #[derive(Debug, Serialize, Deserialize, Clone, Default, PartialEq)]
 pub struct CartItem {
     pub product: Product,
@@ -41,7 +39,7 @@ impl ShoppingCart {
         }
     }
 
-    pub async fn update_item_prices(&mut self, access_token: Option<String>) {
+    pub async fn update_cart(&mut self, access_token: Option<String>) -> Self {
         let url = make_backend_url("api/prices");
         let client = reqwest::Client::new();
         let request = match access_token {
@@ -50,7 +48,7 @@ impl ShoppingCart {
         };
         let response = match request.send().await {
             Ok(response) => response,
-            Err(_) => return,
+            Err(_) => return Default::default(),
         };
         let response: HashMap<u32, f32> = (response.json().await).unwrap_or_default();
         for (product_id, price) in response {
@@ -58,6 +56,7 @@ impl ShoppingCart {
                 item.product.price = price;
             }
         }
+        self.clone()
     }
 
     pub fn update_item_comment(&mut self, product_id: u32, comment: Option<String>) {
@@ -66,10 +65,10 @@ impl ShoppingCart {
         }
     }
 
-    pub fn get_total_price(&self, price_level: &PriceLevel, discount: f32) -> f32 {
+    pub fn get_total_price(&self) -> f32 {
         self.items
             .values()
-            .map(|item| item.product.get_price(price_level, discount) * item.quantity as f32)
+            .map(|item| item.product.price * item.quantity as f32)
             .sum()
     }
 

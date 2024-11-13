@@ -53,16 +53,6 @@ pub struct Product {
 }
 
 impl Product {
-    pub fn get_price(&self, price_level: &PriceLevel, discount: f32) -> f32 {
-        match &self.prices {
-            Some(prices) => match prices.get(price_level) {
-                Some(price) => (*price * (1.0 - discount / 100.0)).max(0.0),
-                None => self.price,
-            },
-            None => self.price,
-        }
-    }
-
     pub fn get_image(&self) -> String {
         let image = match &self.image {
             Some(image) => image,

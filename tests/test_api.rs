@@ -21,7 +21,7 @@ impl ApiClient for MockApiClient {
     async fn fetch_data<T: DeserializeOwned>(
         &self,
         endpoint: &str,
-        _access_token: Option<String>,
+        _access_token: Option<&str>,
     ) -> Result<T> {
         let endpoint = endpoint.replace("/", "_");
         let file_path = self.base_path.join(format!("{}.json", endpoint));
