@@ -1,4 +1,15 @@
+use codee::string::JsonSerdeCodec;
+use leptos::*;
+use leptos_meta::Title;
+use leptos_oidc::{Auth, AuthParameters, Authenticated, Challenge};
+use leptos_router::*;
+use leptos_use::storage::use_session_storage;
+use log::info;
+
+use crate::env;
+use crate::models::api::Api;
 use crate::models::cart::ShoppingCart;
+use crate::models::category::Category;
 use crate::models::product::Product;
 use crate::models::user::User;
 use crate::pages::alert::Alert;
@@ -8,13 +19,6 @@ use crate::pages::navbar::Navbar;
 use crate::pages::products::ProductModal;
 use crate::pages::search::SearchPage;
 use crate::utils::make_backend_url;
-use crate::{env, models::category::Category};
-use codee::string::JsonSerdeCodec;
-use leptos::*;
-use leptos_meta::Title;
-use leptos_oidc::{Auth, AuthParameters, Authenticated, Challenge};
-use leptos_router::*;
-use leptos_use::storage::use_session_storage;
 
 #[component]
 pub fn App() -> impl IntoView {
@@ -31,6 +35,7 @@ pub fn AppWithRouter() -> impl IntoView {
     let (get_category, set_category) = create_signal(None::<Category>);
     let (get_product, set_product) = create_signal(None::<Product>);
     let (get_cart, set_cart, _) = use_session_storage::<ShoppingCart, JsonSerdeCodec>("cart");
+    let (get_api, _) = create_signal(Api::new(env::APP_BACKEND_URL.to_string()));
 
     provide_context(get_category);
     provide_context(set_category);
@@ -38,6 +43,7 @@ pub fn AppWithRouter() -> impl IntoView {
     provide_context(set_product);
     provide_context(get_cart);
     provide_context(set_cart);
+    provide_context(get_api);
 
     let auth_parameters = AuthParameters {
         issuer: make_backend_url(env::APP_SIGNIN_URL),
@@ -56,6 +62,12 @@ pub fn AppWithRouter() -> impl IntoView {
     provide_context(get_user);
     provide_context(get_access_token);
 
+    let _ = create_resource(get_access_token, move |access_token| async move {
+        info!("loading data from API");
+        let updated_cart = get_cart().update_cart(access_token).await;
+        set_cart.update(|cart| *cart = updated_cart);
+    });
+
     view! {
         <Alert />
         <Navbar />
@@ -71,8 +83,8 @@ pub fn AppWithRouter() -> impl IntoView {
             }
         </Authenticated>
         <Routes>
-            <Route path="/" view=move || view! { <CategoryPage /> }/>
-            <Route path="/search" view=move || view! { <SearchPage /> }/>
+            <Route path="/" view=move || view! { <CategoryPage /> } />
+            <Route path="/search" view=move || view! { <SearchPage /> } />
             <Route path="/category/:id" view=move || view! { <CategoryPage /> } />
             <Route path="/category/:id/tag/:tag" view=move || view! { <CategoryPage /> } />
             <Route path="/*" view=|| view! { <h1>404 Not Found</h1> } />

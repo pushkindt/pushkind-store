@@ -1,14 +1,17 @@
-use crate::env;
-use crate::models::category::Category;
-use crate::models::cart::ShoppingCart;
-use crate::models::tag::load_tags;
-use crate::utils::make_backend_url;
 use leptos::*;
 use leptos_oidc::{Authenticated, LoginLink, LogoutLink};
+
+use crate::env;
+use crate::models::api::Api;
+use crate::models::cart::ShoppingCart;
+use crate::models::category::Category;
+use crate::models::tag::load_tags;
+use crate::utils::make_backend_url;
 
 #[component]
 pub fn Navbar() -> impl IntoView {
     let get_category = expect_context::<ReadSignal<Option<Category>>>();
+    let get_api = expect_context::<ReadSignal<Api>>();
 
     let category_id = move || match get_category() {
         None => 0,
@@ -31,8 +34,9 @@ pub fn Navbar() -> impl IntoView {
 
     let access_token = expect_context::<ReadSignal<Option<String>>>();
 
-    let tags = create_resource(access_token, move |access_token| async move {
-        load_tags(&access_token).await
+    let fetch_tags_params = move || (get_api(), access_token());
+    let tags = create_resource(fetch_tags_params, move |(api, access_token)| async move {
+        load_tags(api, access_token.as_deref()).await
     });
     let tags = move || match tags.get() {
         None => vec![],

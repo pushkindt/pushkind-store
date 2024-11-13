@@ -1,7 +1,7 @@
 use crate::env;
 use crate::models::alert::{AlertMessage, AlertType};
 use crate::models::cart::{CartItem, ShoppingCart};
-use crate::models::product::{PriceLevel, Product};
+use crate::models::product::Product;
 use crate::models::user::User;
 use leptos::*;
 use leptos_oidc::{Authenticated, LoginLink};
@@ -21,7 +21,7 @@ pub fn CartModal() -> impl IntoView {
     let price_level = move || get_user().price_level;
     let discount = move || get_user().discount;
 
-    let cart_sum = move || get_cart().get_total_price(&price_level(), discount());
+    let cart_sum = move || get_cart().get_total_price();
 
     let cart_items = move || get_cart().items.values().cloned().collect::<Vec<_>>();
 
@@ -82,7 +82,7 @@ pub fn CartModal() -> impl IntoView {
 
                             { move || {
                                     cart_items().into_iter()
-                                    .map(|item| view! { <CartLineItem item=item price_level=Signal::derive(price_level) discount=Signal::derive(discount) /> })
+                                    .map(|item| view! { <CartLineItem item=item /> })
                                     .collect_view()
                                 }
                             }
@@ -154,17 +154,11 @@ pub fn CartModal() -> impl IntoView {
 }
 
 #[component]
-fn CartLineItem(
-    item: CartItem,
-    #[prop(into)] price_level: Signal<PriceLevel>,
-    discount: Signal<f32>,
-) -> impl IntoView {
+fn CartLineItem(item: CartItem) -> impl IntoView {
     let set_product = expect_context::<WriteSignal<Option<Product>>>();
 
-    let product_clone = item.product.clone();
-
     let product_image = item.product.get_image();
-    let product_price = move || product_clone.get_price(&price_level(), discount());
+    let product_price = item.product.price;
     let product_name = item.product.name.clone();
     let product_sku = item.product.sku.clone();
     let product_measurement = item.product.measurement.clone().unwrap_or_default();
@@ -192,7 +186,7 @@ fn CartLineItem(
                 </div>
                 <div class="row">
                     <div class="col text-end">
-                        {item_quantity}" "{product_measurement}" по "{move || format!("{:.2}", product_price() )}"₽"
+                        {item_quantity}" "{product_measurement}" по "{move || format!("{:.2}", product_price )}"₽"
                     </div>
                 </div>
                 <div class="row">
