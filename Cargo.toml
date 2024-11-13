@@ -18,9 +18,13 @@ reqwest = { version = "0.12", features = ["json"] }
 leptos-use = "0.12.0"
 codee = { version = "0.1", features = ["json_serde"] }
 leptos_oidc = { git = "https://gitlab.com/michael.catanzariti/leptos_oidc.git" }
+anyhow = "1.0.93"
 
 [build-dependencies]
 dotenvy = "0.15"
+
+[dev-dependencies]
+tokio = { version = "1", features = ["full"] }
 
 [profile.release]
 codegen-units = 1

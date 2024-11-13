@@ -64,10 +64,12 @@ pub fn AppWithRouter() -> impl IntoView {
         <Authenticated unauthenticated=move || {
             set_user.update(|user| *user = User::default());
             set_access_token.update(|access_token| *access_token = None::<String>);
+
         }>
             {
                 set_user.update(|user| *user = User::from_auth(&auth));
                 set_access_token.update(|access_token| *access_token = auth.access_token());
+
             }
         </Authenticated>
         <Routes>

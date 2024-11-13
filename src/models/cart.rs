@@ -41,6 +41,25 @@ impl ShoppingCart {
         }
     }
 
+    pub async fn update_item_prices(&mut self, access_token: Option<String>) {
+        let url = make_backend_url("api/prices");
+        let client = reqwest::Client::new();
+        let request = match access_token {
+            Some(token) => client.get(url).bearer_auth(token),
+            None => client.get(url),
+        };
+        let response = match request.send().await {
+            Ok(response) => response,
+            Err(_) => return,
+        };
+        let response: HashMap<u32, f32> = (response.json().await).unwrap_or_default();
+        for (product_id, price) in response {
+            if let Some(item) = self.items.get_mut(&product_id) {
+                item.product.price = price;
+            }
+        }
+    }
+
     pub fn update_item_comment(&mut self, product_id: u32, comment: Option<String>) {
         if let Some(item) = self.items.get_mut(&product_id) {
             item.comment = comment;
