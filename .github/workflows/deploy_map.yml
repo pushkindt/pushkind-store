@@ -32,7 +32,7 @@ jobs:
         echo APP_PROFILE_URL=${{ vars.APP_PROFILE_URL }} >> .env
         echo APP_TITLE=\"Магазин Map\" >> .env
         echo APP_LOGO_URL=static/upload/logo1.png >> .env
-        echo APP_HUB_ID=1 >> .env
+        echo APP_CONTACTS_URL=contacts?client_id= >> .env
     - name: Build
       run: trunk build --release
     - name: Install SSH Key

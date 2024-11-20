@@ -1,6 +1,6 @@
 use crate::env;
-use crate::models::category::Category;
 use crate::models::cart::ShoppingCart;
+use crate::models::category::Category;
 use crate::models::tag::load_tags;
 use crate::utils::make_backend_url;
 use leptos::*;
@@ -112,6 +112,12 @@ pub fn Navbar() -> impl IntoView {
                                     <a class="dropdown-item icon-link" href=make_backend_url(env::APP_PROFILE_URL)>
                                         <i class="bi bi-person mb-2"></i>
                                         "Профиль"
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item icon-link" href="/contacts">
+                                        <i class="bi bi-telephone mb-2"></i>
+                                        "Контакты"
                                     </a>
                                 </li>
                                 <li>
