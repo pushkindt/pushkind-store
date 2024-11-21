@@ -98,6 +98,9 @@ pub fn Navbar() -> impl IntoView {
                             <span class="visually-hidden">items in cart</span>
                         </span>
                     </a>
+                    <a class="nav-link text-muted ms-3" href="#" data-bs-toggle="modal" data-bs-target="#contactsModal" title="Контакты">
+                        <i class="bi bi-telephone fs-4"></i>
+                    </a>
                     <Authenticated unauthenticated=move || {
                         view! {
                             <LoginLink class="nav-link text-muted ms-3">"Войти"</LoginLink>
@@ -112,12 +115,6 @@ pub fn Navbar() -> impl IntoView {
                                     <a class="dropdown-item icon-link" href=make_backend_url(env::APP_PROFILE_URL)>
                                         <i class="bi bi-person mb-2"></i>
                                         "Профиль"
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item icon-link" href="/contacts">
-                                        <i class="bi bi-telephone mb-2"></i>
-                                        "Контакты"
                                     </a>
                                 </li>
                                 <li>

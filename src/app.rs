@@ -4,6 +4,7 @@ use crate::models::user::User;
 use crate::pages::alert::Alert;
 use crate::pages::cart::CartModal;
 use crate::pages::category::CategoryPage;
+use crate::pages::contacts::ContactsModal;
 use crate::pages::navbar::Navbar;
 use crate::pages::products::ProductModal;
 use crate::pages::search::SearchPage;
@@ -61,6 +62,7 @@ pub fn AppWithRouter() -> impl IntoView {
         <Navbar />
         <ProductModal />
         <CartModal />
+        <ContactsModal />
         <Authenticated unauthenticated=move || {
             set_user.update(|user| *user = User::default());
             set_access_token.update(|access_token| *access_token = None::<String>);
@@ -75,9 +77,6 @@ pub fn AppWithRouter() -> impl IntoView {
             <Route path="/search" view=move || view! { <SearchPage /> }/>
             <Route path="/category/:id" view=move || view! { <CategoryPage /> } />
             <Route path="/category/:id/tag/:tag" view=move || view! { <CategoryPage /> } />
-            <Route path="/contacts" view=|| view! {
-                <iframe class="w-100 mt-3" style="height: 80vh;" src=make_backend_url(&format!("{}{}", env::APP_CONTACTS_URL, env::APP_SIGNIN_CLIENT))></iframe>
-            } />
             <Route path="/*" view=|| view! { <h1>404 Not Found</h1> } />
         </Routes>
     }
