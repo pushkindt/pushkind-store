@@ -65,8 +65,8 @@ impl Product {
 
     pub fn get_image(&self) -> String {
         let image = match &self.image {
-            Some(image) => image,
-            None => env::APP_DEFAULT_PRODUCT_IMAGE,
+            Some(image) if image.len() > 0 => image,
+            _ => env::APP_DEFAULT_PRODUCT_IMAGE,
         };
         match image
             .get(0..4)
