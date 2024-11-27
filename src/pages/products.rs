@@ -56,6 +56,13 @@ pub fn ProductModal() -> impl IntoView {
             None => "".to_string(),
         },
     };
+    let product_options = move || match get_product() {
+        None => None,
+        Some(product) => match product.options {
+            None => None,
+            Some(options) => Some(options),
+        },
+    };
 
     let quantity_element: NodeRef<html::Input> = create_node_ref();
     let comment_element: NodeRef<html::Textarea> = create_node_ref();
@@ -138,6 +145,46 @@ pub fn ProductModal() -> impl IntoView {
                                             <span class="visually-hidden">Next</span>
                                         </button>
                                     </div>
+                                    {
+                                        move || match product_options() {
+                                            None => view! {}.into_view(),
+                                            Some(options) => view! {
+                                                {
+                                                    options.iter().map(|(option, values)| {
+                                                        view! {
+                                                            <div class="row mb-2">
+                                                                <div class="col fw-bold">
+                                                                    {option}
+                                                                </div>
+                                                                <div class="col">
+                                                                    {
+                                                                        match values.len() {
+                                                                            1 => view! { {values[0].clone()} }.into_view(),
+                                                                            _ => view! {
+                                                                                <select class="form-select productOption" name=option>
+                                                                                {
+                                                                                    values.iter().map(|value| {
+                                                                                    view! {
+
+                                                                                            <option value=value>
+                                                                                                {value}
+                                                                                            </option>
+
+                                                                                    }
+                                                                                    }).collect_view()
+                                                                                }
+                                                                                </select>
+                                                                            }.into_view(),
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    }).collect_view()
+                                                }
+                                            }.into_view(),
+                                        }
+                                    }
                                 </div>
                                 <div class="col-sm">
                                     <form on:submit=on_submit>
@@ -177,13 +224,13 @@ pub fn ProductModal() -> impl IntoView {
                                                 <button data-bs-dismiss="modal" type="submit" class="btn btn-primary">"Сохранить"</button>
                                             </div>
                                         </div>
+                                        <div class="row">
+                                            <strong>"Описание:"</strong>
+                                            <p>{product_description}</p>
+                                        </div>
                                     </form>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <strong>"Описание:"</strong>
-                            <pre>{product_description}</pre>
                         </div>
                     </div>
                 </div>
