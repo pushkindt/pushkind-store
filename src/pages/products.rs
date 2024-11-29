@@ -189,7 +189,7 @@ pub fn ProductModal() -> impl IntoView {
                                 <div class="col-sm">
                                     <form on:submit=on_submit>
                                         <div class="row my-1">
-                                            <div class="col-3 fw-bold">
+                                            <div class="col fw-bold">
                                                 "Артикул: "
                                             </div>
                                             <div class="col">
@@ -197,7 +197,7 @@ pub fn ProductModal() -> impl IntoView {
                                             </div>
                                         </div>
                                         <div class="row my-1">
-                                            <div class="col-3 fw-bold">
+                                            <div class="col fw-bold">
                                                 "Цена: "
                                             </div>
                                             <div class="col">
