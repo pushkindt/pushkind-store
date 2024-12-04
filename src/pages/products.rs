@@ -297,7 +297,6 @@ pub fn ProductCards(#[prop(into)] products: Signal<Option<Products>>) -> impl In
     let discount = move || get_user().discount;
 
     view! {
-        <ProductPagination products=products />
 
         {
             move || match products.get() {
@@ -305,7 +304,7 @@ pub fn ProductCards(#[prop(into)] products: Signal<Option<Products>>) -> impl In
                 Some(products) => match products.total {
                     0 => view! { <div class="row"><div class="col"><div class="alert alert-primary">"Ничего не найдено"</div></div></div> }.into_view(),
                     _ => view! {
-                        <div class="row row-cols-1 row-cols-lg-6 row-cols-md-4 row-cols-sm-2">
+                        <div class="row row-cols-1 row-cols-lg-4 row-cols-md-4 row-cols-sm-1">
                         <For each=products_products key=move |product| product.id children=move |product| view! {
                             <ProductCard product=product.clone() price_level=Signal::derive(price_level) discount=Signal::derive(discount) />
                         } />
